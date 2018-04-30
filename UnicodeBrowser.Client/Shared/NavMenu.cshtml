@@ -1,0 +1,67 @@
+﻿@implements IDisposable
+@inject Microsoft.AspNetCore.Blazor.Services.IUriHelper UriHelper
+@inject ApplicationState ApplicationState
+
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-primary">
+    <a class="navbar-brand" href="/">Unicode Browser</a>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <NavLink class="nav-link" href="/home">Home</NavLink>
+            </li>
+            <li class="nav-item">
+                <NavLink class="nav-link" href="/decomposition">Decomposition</NavLink>
+            </li>
+            <li class="nav-item">
+                <NavLink class="nav-link" href="/blocks">Blocks</NavLink>
+            </li>
+        </ul>
+
+        <form class="form-inline my-2 my-lg-0">
+            <input class="form-control mr-sm-2" type="search" name="q" bind="@CharacterSearchText" placeholder="Search a character…" aria-label="Search" autocomplete="off" />
+            <button class="btn btn-success my-2 my-sm-0" type="submit" onclick="@SearchCharacter"><i class="fas fa-search"></i><p class="sr-only">Search</p></button>
+        </form>
+    </div>
+
+    @if (ApplicationState.IsBusy)
+    {
+        <span class="navbar-text pl-3 ml-auto mr-3">
+            <i class="fas fa-spinner fa-pulse"></i>
+        </span>
+    }
+
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+</nav>
+
+@functions {
+    protected override void OnInit()
+    {
+        ApplicationState.PropertyChanged += OnApplicationStatePropertyChanged;
+    }
+
+    public void Dispose()
+    {
+        ApplicationState.PropertyChanged -= OnApplicationStatePropertyChanged;
+    }
+
+    private void OnApplicationStatePropertyChanged(object sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(ApplicationState.IsBusy))
+        {
+            StateHasChanged();
+        }
+    }
+
+    private string CharacterSearchText { get; set; }
+
+    public void SearchCharacter()
+    {
+        if (!string.IsNullOrEmpty(CharacterSearchText))
+        {
+            UriHelper.NavigateTo("/search?q=" + Uri.EscapeDataString(CharacterSearchText));
+        }
+    }
+}

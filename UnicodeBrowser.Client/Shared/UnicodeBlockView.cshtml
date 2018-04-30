@@ -1,0 +1,192 @@
+﻿@inject HttpClient Http
+
+@if (Block != null)
+{
+    <h2>@Block.Name <small>@Block.Range.FirstCodePoint.ToCodePointRepresentation() - @Block.Range.LastCodePoint.ToCodePointRepresentation()</small></h2>
+
+    @if (!string.IsNullOrEmpty(ErrorMessage))
+    {
+        <div class="alert alert-danger" role="alert"><pre>@ErrorMessage</pre></div>
+    }
+    @if (LastFetchedCodePoint < Block.Range.FirstCodePoint)
+    {
+        <div class="spinner"><i class="fas fa-2x fa-spinner fa-pulse"></i></div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-sm table-bordered code-point-table">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>0</th>
+                        <th>1</th>
+                        <th>2</th>
+                        <th>3</th>
+                        <th>4</th>
+                        <th>5</th>
+                        <th>6</th>
+                        <th>7</th>
+                        <th>8</th>
+                        <th>9</th>
+                        <th>A</th>
+                        <th>B</th>
+                        <th>C</th>
+                        <th>D</th>
+                        <th>E</th>
+                        <th>F</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        int firstRow = FirstRow;
+                        int lastRow = (LastFetchedCodePoint >> 4);
+                        int rowCount = lastRow - firstRow + 1;
+
+                        for (int i = 0; i < rowCount; i++)
+                        {
+                            int codePointOffset = i << 4;
+                            int baseCodePoint = (firstRow << 4) + codePointOffset;
+
+                            <tr>
+                                <td>@baseCodePoint.ToHexadecimal()</td>
+                                @for (int j = 0; j <= 0xF; j++)
+                                {
+                                    var codePoint = CodePoints[codePointOffset | j];
+
+                                    if (codePoint == null)
+                                    {
+                                        <td class="code-point-view"></td>
+                                    }
+                                    else
+                                    {
+                                        <td class="code-point-view" title="@codePoint.GetDisplayName()">
+                                            <div class="display-text-container"><div class="display-text"><a href="/codepoints/@codePoint.Index.ToHexadecimal()">@codePoint.DisplayText</a></div></div>
+                                            <div class="code-point text-info text-center"><a href="/codepoints/@codePoint.Index.ToHexadecimal()">@codePoint.Index.ToCodePointRepresentation()</a></div>
+                                        </td>
+                                    }
+                                }
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+        @if (IsFetching)
+        {
+            <div class="spinner"><i class="fas fa-2x fa-spinner fa-pulse"></i></div>
+        }
+        else if (LastRow > FirstRow && HasRemainingCodePoints)
+        {
+            <button type="button" class="btn btn-info" onclick="@FetchNextCodePoints">Load more code points…</button>
+        }
+    }
+}
+
+@functions {
+    private UnicodeBrowser.Client.Models.BlockInformation _block;
+
+    public UnicodeBrowser.Client.Models.BlockInformation Block
+    {
+        get => _block;
+        set
+        {
+            if (!ReferenceEquals(value, _block) && (value == null || _block == null || !_block.Equals(value)))
+            {
+                FetchFirstCodePoints(value);
+            }
+        }
+    }
+
+    private string ErrorMessage { get; set; }
+
+    private int FirstRow { get; set; }
+    private int LastRow { get; set; }
+    private int LastFetchedCodePoint { get; set; }
+
+    private UnicodeBrowser.Client.Models.CodePoint[] CodePoints { get; set; }
+
+    private bool IsFetching { get; set; }
+
+    private bool HasRemainingCodePoints => Block != null && LastFetchedCodePoint < Block.Range.LastCodePoint;
+
+    private CancellationTokenSource _cancellationTokenSource;
+
+    private void FetchFirstCodePoints(UnicodeBrowser.Client.Models.BlockInformation block)
+    {
+        if (_cancellationTokenSource != null)
+        {
+            _cancellationTokenSource.Cancel();
+            _cancellationTokenSource.Dispose();
+        }
+
+        _cancellationTokenSource = new CancellationTokenSource();
+
+        _block = block;
+
+        if (block == null)
+        {
+            FirstRow = 0;
+            LastRow = 0;
+            LastFetchedCodePoint = 0;
+            CodePoints = null;
+        }
+        else
+        {
+            FirstRow = (block.Range.FirstCodePoint >> 4);
+            LastRow = (block.Range.LastCodePoint >> 4);
+            LastFetchedCodePoint = block.Range.FirstCodePoint - 1;
+
+            // Initialize an array that is big enough to hold all code points… Let's hope that this is not a mistake.
+            CodePoints = new UnicodeBrowser.Client.Models.CodePoint[(LastRow - FirstRow + 1) << 4];
+
+            FetchNextCodePoints();
+        }
+    }
+
+    private void FetchNextCodePoints() => FetchNextCodePointsInternal(_cancellationTokenSource.Token);
+
+    private async void FetchNextCodePointsInternal(CancellationToken cancellationToken)
+    {
+        ErrorMessage = null;
+
+        IsFetching = true;
+        StateHasChanged();
+
+        int offset = LastFetchedCodePoint + 1;
+        int remainingCodePoints = Block.Range.LastCodePoint - LastFetchedCodePoint;
+
+        try
+        {
+            (long count, var codePoints) = await FetchCodePoints(offset, remainingCodePoints, cancellationToken);
+
+            if (cancellationToken.IsCancellationRequested) return;
+
+            int index = offset - (Block.Range.FirstCodePoint & ~0xF);
+
+            foreach (var codePoint in codePoints)
+            {
+                CodePoints[index + (codePoint.Index - offset)] = codePoint;
+            }
+
+            LastFetchedCodePoint += checked((int)count);
+        }
+        catch (OperationCanceledException)
+        {
+            // Cancellation of the request is expected to happen and should not try to revert the fetching state.
+            // The pat of the code that triggered the cancellation will take care of that.
+            return;
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = ex.ToString();
+        }
+
+        IsFetching = false;
+        StateHasChanged();
+        return;
+    }
+
+    private Task<(long count, UnicodeBrowser.Client.Models.CodePoint[])> FetchCodePoints(int offset, int limit, CancellationToken cancellationToken)
+        => Http.GetItemsAsync<UnicodeBrowser.Client.Models.CodePoint>("/api/codepoints", offset, Math.Min(limit, 128));
+}

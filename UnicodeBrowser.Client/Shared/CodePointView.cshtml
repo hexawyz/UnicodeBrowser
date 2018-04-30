@@ -1,0 +1,112 @@
+﻿<div class="code-point-info">
+    <div class="display-text-container"><div class="display-text">@CodePoint.DisplayText</div></div>
+    <dl class="row">
+        <dt class="col-3">Code point</dt>
+        <dd class="col-9">@CodePoint.Index.ToCodePointRepresentation()</dd>
+        @if (!string.IsNullOrEmpty(CodePoint.Name))
+        {
+            <dt class="col-3">Name</dt>
+            <dd class="col-9">@CodePoint.Name</dd>
+        }
+        @if (!string.IsNullOrEmpty(CodePoint.OldName))
+        {
+            <dt class="col-3">Old name</dt>
+            <dd class="col-9">@CodePoint.OldName</dd>
+        }
+        @if (CodePoint.NameAliases != null && CodePoint.NameAliases.Length > 0)
+        {
+            <dt class="col-3">Aliases</dt>
+            <dd class="col-9">
+                <table class="table table-sm table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Kind</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var nameAlias in CodePoint.NameAliases)
+                        {
+                            <tr repeat.for="nameAlias of codePoint.nameAliases">
+                                <td>@nameAlias.Name</td>
+                                <td>@nameAlias.Kind</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </dd>
+        }
+        <dt class="col-3">Category</dt>
+        <dd class="col-9">@CodePoint.Category.LongName (@CodePoint.Category.ShortName)</dd>
+        <dt class="col-3">Block</dt>
+        <dd class="col-9"><a href="/blocks/@Uri.EscapeDataString(CodePoint.Block)">@CodePoint.Block</a></dd>
+
+        @if (!string.IsNullOrEmpty(CodePoint.NumericType))
+        {
+            <dt class="col-3">Numeric Type</dt>
+            <dd class="col-9">
+                @CodePoint.NumericType
+                @if (!string.IsNullOrEmpty(CodePoint.UnihanNumericType))
+                {
+                    <text>(<span class="unihanNumericType">@CodePoint.UnihanNumericType</span>)</text>
+                }
+            </dd>
+        }
+        @if (CodePoint.NumericValue != null)
+        {
+            <dt class="col-3">Numeric Value</dt>
+            <dd class="col-9">
+                @CodePoint.NumericValue
+                @if (CodePoint.NumericValue.Denominator != 1)
+                {
+                    <text>/ @CodePoint.NumericValue.Denominator</text>
+                }
+            </dd>
+        }
+
+        @if (!string.IsNullOrEmpty(CodePoint.Definition))
+        {
+            <dt class="col-3">Definition</dt>
+            <dd class="col-9">@CodePoint.Definition</dd>
+        }
+        @if (!string.IsNullOrEmpty(CodePoint.MandarinReading))
+        {
+            <dt class="col-3">Mandarin Reading</dt>
+            <dd class="col-9">@CodePoint.MandarinReading</dd>
+        }
+        @if (!string.IsNullOrEmpty(CodePoint.CantoneseReading))
+        {
+            <dt class="col-3">Cantonese Reading</dt>
+            <dd class="col-9">@CodePoint.CantoneseReading</dd>
+        }
+        @if (!string.IsNullOrEmpty(CodePoint.JapaneseKunReading))
+        {
+            <dt class="col-3">Japanese Kun Reading</dt>
+            <dd class="col-9">@CodePoint.JapaneseKunReading</dd>
+        }
+        @if (!string.IsNullOrEmpty(CodePoint.JapaneseOnReading))
+        {
+            <dt class="col-3">Japanese On Reading</dt>
+            <dd class="col-9">@CodePoint.JapaneseOnReading</dd>
+        }
+        @if (!string.IsNullOrEmpty(CodePoint.KoreanReading))
+        {
+            <dt class="col-3">Korean Reading</dt>
+            <dd class="col-9">@CodePoint.KoreanReading</dd>
+        }
+        @if (!string.IsNullOrEmpty(CodePoint.HangulReading))
+        {
+            <dt class="col-3">Hangul Reading</dt>
+            <dd class="col-9">@CodePoint.HangulReading</dd>
+        }
+        @if (!string.IsNullOrEmpty(CodePoint.VietnameseReading))
+        {
+            <dt class="col-3">Vietnamese Reading</dt>
+            <dd class="col-9">@CodePoint.VietnameseReading</dd>
+        }
+    </dl>
+</div>
+
+@functions {
+    public UnicodeBrowser.Client.Models.CodePoint CodePoint { get; set; }
+}

@@ -1,0 +1,67 @@
+﻿@using System.Text
+@inject HttpClient Http
+
+@if (CodePoints == null)
+{
+    <div class="spinner"><i class="fas fa-spinner fa-pulse"></i></div>
+}
+else
+{
+    <table class="table table-sm table-bordered table-striped decomposition-table">
+        <thead class="thead-dark">
+            <tr>
+                <th class="display-text">Character</th>
+                <th class="code-point">Code Point</th>
+                <th class="name">Name</th>
+                <th class="unicode-category">Category</th>
+                <th class="unicode-block">Block</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var codePoint in CodePoints)
+            {
+                <tr>
+                    <td class="display-text"><div class="display-text-container"><div class="display-text"><a href="/codepoints/@codePoint.Index.ToHexadecimal()">@codePoint.DisplayText</a></div></div></td>
+                    <td class="code-point"><a href="/codepoints/@codePoint.Index.ToHexadecimal()">@codePoint.Index.ToCodePointRepresentation()</a></td>
+                    <td class="name">@codePoint.Name</td>
+                    <td class="unicode-category">@codePoint.Category.LongName (@codePoint.Category.ShortName)</td>
+                    <td class="unicode-block"><a href="/blocks/@Uri.EscapeDataString(codePoint.Block)">@codePoint.Block</a></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@functions {
+    private string _text;
+
+    public string Text
+    {
+        get => _text;
+        set
+        {
+            if (value != _text)
+            {
+                _text = value;
+                UpdateDecompositionAsync();
+            }
+        }
+    }
+
+    public UnicodeBrowser.Client.Models.CodePoint[] CodePoints { get; set; }
+
+    private async Task DecomposeTextAsyncAsync()
+    {
+        var response = await Http.PostAsync("/api/text/decompose", new StringContent(Text, Encoding.UTF8));
+
+        CodePoints = JsonUtil.Deserialize<UnicodeBrowser.Client.Models.CodePoint[]>(await response.Content.ReadAsStringAsync());
+    }
+
+    private async void UpdateDecompositionAsync()
+    {
+        CodePoints = null;
+        StateHasChanged();
+        await DecomposeTextAsyncAsync();
+        StateHasChanged();
+    }
+}

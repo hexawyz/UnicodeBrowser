@@ -1,0 +1,103 @@
+﻿@page "/"
+@page "/home"
+@using Microsoft.AspNetCore.Blazor.Browser.Interop
+@using System.Globalization
+@inject Microsoft.AspNetCore.Blazor.Services.IUriHelper UriHelper
+@inject ApplicationState ApplicationState
+
+<section>
+    <h1>Home</h1>
+
+    <div class="card mb-3">
+        <div class="card-header">Decompose text</div>
+        <div class="card-body">
+            <form>
+                <div class="form-group">
+                    <label for="textToDecomposeTextBox">Text to analyze</label>
+                    <div class="input-group">
+                        <input id="textToDecomposeTextBox" type="text" class="form-control" bind="@Text" placeholder="Type or paste the text to analyze…" />
+                        <span class="input-group-append"><button type="submit" class="btn btn-primary" onclick="@DecomposeText"><i class="fas fa-cogs"></i><p class="sr-only">Decompose</p></button></span>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="card mb-3">
+        <div class="card-header">Find code point</div>
+        <div class="card-body">
+            <form id="codePointFinderForm" class="needs-validation@(IsHexCodePointFormValidated ? " was-validated" : "")" novalidate>
+                <div class="form-group">
+                    <label for="hexCodePointTextBox">Code point</label>
+                    <div class="input-group">
+                        <input id="hexCodePointTextBox" type="text" class="form-control" bind="@HexCodePoint" placeholder="Type an hexadecimal code point number…" required maxlength="6" pattern="[0-9a-fA-F]{1,6}" />
+                        <div class="invalid-feedback order-1">
+                            Please enter a valid hexadecimal number.
+                        </div>
+                        <span class="input-group-append"><button type="submit" class="btn btn-success" onclick="@GoToCodePoint"><i class="fas fa-search"></i><p class="sr-only">Lookup</p></button></span>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="card mb-3">
+        <div class="card-header">Browse blocks</div>
+        <div class="card-body">
+            @if (Blocks == null)
+            {
+                <div class="spinner"><i class="fas fa-2x fa-spinner fa-pulse"></i></div>
+            }
+            else
+            {
+                <form>
+                    <div class="form-group">
+                        <label for="blockComboBox">Unicode block</label>
+                        <div class="input-group">
+                            <select id="blockComboBox" class="form-control" bind="@SelectedBlockName">
+                                @foreach (var block in Blocks)
+                                {
+                                    <option value="@block.Name">@block.Name</option>
+                                }
+                            </select>
+                            <span class="input-group-append"><button type="submit" class="btn btn-success" onclick="@BrowseBlock"><i class="fas fa-arrow-right"></i><p class="sr-only">Go</p></button></span>
+                        </div>
+                    </div>
+                </form>
+            }
+        </div>
+    </div>
+</section>
+
+@functions {
+    public string Text { get; set; }
+    public string HexCodePoint { get; set; }
+    public bool IsHexCodePointFormValidated { get; set; }
+    public string SelectedBlockName { get; set; }
+    public UnicodeBrowser.Client.Models.BlockInformation[] Blocks { get; set; }
+
+    protected override async Task OnInitAsync()
+    {
+        Blocks = await ApplicationState.GetBlocksAsync();
+    }
+
+    public void DecomposeText()
+    {
+        UriHelper.NavigateTo("/decomposition?text=" + Uri.EscapeDataString(Text));
+    }
+
+    public void GoToCodePoint()
+    {
+        IsHexCodePointFormValidated = true;
+
+        if (RegisteredFunction.Invoke<bool>("checkFormValidity", "codePointFinderForm") && int.TryParse(HexCodePoint, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out _))
+        {
+            UriHelper.NavigateTo("/codepoints/" + Uri.EscapeDataString(HexCodePoint));
+        }
+    }
+
+    public void BrowseBlock()
+    {
+        UriHelper.NavigateTo("/blocks/" + Uri.EscapeDataString(SelectedBlockName));
+    }
+}

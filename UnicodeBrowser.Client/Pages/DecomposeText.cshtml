@@ -1,0 +1,72 @@
+﻿@page "/decomposition"
+@implements IDisposable
+@inject Microsoft.AspNetCore.Blazor.Services.IUriHelper UriHelper
+@inject ApplicationState ApplicationState
+
+<section>
+    <h1>Decomposition</h1>
+    <div class="card mb-3">
+        <div class="card-header">Decompose text</div>
+        <div class="card-body">
+            <form> @* form onsubmit="@DecomposeText" should have been used, but it is not yet supported in Blazor, so button onclick is used instead ☹️ *@
+                <div class="form-group">
+                    <label class="control-label" for="textToDecomposeTextBox">Text to analyze</label>
+                    <div class="input-group">
+                        <input id="textToDecomposeTextBox" type="text" class="form-control" bind="@Text" placeholder="Type or paste the text to analyze…" />
+                        <span class="input-group-btn"><button type="submit" class="btn btn-primary" onclick="@UpdateDecomposition"><i class="fas fa-arrow-right"></i><p class="sr-only">Decompose</p></button></span>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    @if (!string.IsNullOrEmpty(AnalyzedText))
+    {
+        <div class="card mb-3">
+            <div class="card-header">Decomposition</div>
+            <div class="card-body">
+                <p>@AnalyzedText</p>
+                <DecompositionView Text="@AnalyzedText" />
+            </div>
+        </div>
+    }
+</section>
+@functions {
+    public string Text { get; set; }
+    public string AnalyzedText { get; set; }
+
+    protected override void OnInit()
+    {
+        RefreshParameters(UriHelper.GetAbsoluteUri());
+        UriHelper.OnLocationChanged += OnLocationChanged;
+    }
+
+    public void Dispose()
+    {
+        UriHelper.OnLocationChanged -= OnLocationChanged;
+    }
+
+    private void OnLocationChanged(object sender, string location)
+    {
+        RefreshParameters(location);
+        StateHasChanged();
+    }
+
+    private void RefreshParameters(string uri)
+    {
+        if (QueryHelpers.ParseQuery(new Uri(uri).Query).TryGetValue("text", out var text))
+        {
+            AnalyzedText = Text = text.ToString();
+        }
+        else
+        {
+            AnalyzedText = Text = string.Empty;
+        }
+    }
+
+    public void UpdateDecomposition()
+    {
+        // As of today, this won't reload the component, which is exactly what I wanted (yeah !)
+        // Instead, this will simply trigger the LocationChanged event, allowing us to update the page.
+        UriHelper.NavigateTo("/decomposition?text=" + Uri.EscapeDataString(Text));
+    }
+}

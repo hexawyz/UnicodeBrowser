@@ -1,0 +1,132 @@
+﻿@page "/search"
+@implements IDisposable
+@inject Microsoft.AspNetCore.Blazor.Services.IUriHelper UriHelper
+@inject HttpClient Http
+
+<section>
+    <h1>Search Results</h1>
+
+    @if (!string.IsNullOrEmpty(Query))
+    {
+        @if (CodePoints == null)
+        {
+            <div class="spinner"><i class="fas fa-2x fa-spinner fa-pulse"></i></div>
+        }
+        else
+        {
+            <p>The search for "@Query" produced @CodePoints.Length.ToString(CultureInfo.InvariantCulture) results.</p>
+            @if (CodePoints.Length > 0)
+            {
+                <table class="table table-sm table-bordered table-striped decomposition-table">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th class="display-text">Character</th>
+                            <th class="code-point">Code Point</th>
+                            <th class="name">Name</th>
+                            <th class="unicode-category">Category</th>
+                            <th class="unicode-block">Block</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var codePoint in CodePoints)
+                        {
+                            <tr>
+                                <td class="display-text"><div class="display-text-container"><div class="display-text"><a href="/codepoints/@codePoint.Index.ToHexadecimal()">@codePoint.DisplayText</a></div></div></td>
+                                <td class="code-point"><a href="/codepoints/@codePoint.Index.ToHexadecimal()">@codePoint.Index.ToCodePointRepresentation()</a></td>
+                                <td class="name">@codePoint.Name</td>
+                                <td class="unicode-category">@codePoint.Category.LongName (@codePoint.Category.ShortName)</td>
+                                <td class="unicode-block"><a route-href="/blocks/@Uri.EscapeDataString(codePoint.Block)">@codePoint.Block</a></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+        }
+    }
+</section>
+
+@functions {
+    private CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
+
+    private string Query { get; set; }
+
+    private UnicodeBrowser.Client.Models.CodePoint[] CodePoints { get; set; }
+
+    protected override async Task OnInitAsync()
+    {
+        UriHelper.OnLocationChanged += OnLocationChanged;
+
+        if (RefreshParameters(UriHelper.GetAbsoluteUri()))
+        {
+            if (string.IsNullOrEmpty(Query))
+            {
+                UriHelper.NavigateTo("/home");
+            }
+            else
+            {
+                CodePoints = await SearchAsync(_cancellationTokenSource.Token);
+            }
+        }
+    }
+
+    public void Dispose()
+    {
+        UriHelper.OnLocationChanged -= OnLocationChanged;
+    }
+
+    private async void OnLocationChanged(object sender, string location)
+    {
+        if (!RefreshParameters(location)) return;
+
+        try
+        {
+            if (string.IsNullOrEmpty(Query))
+            {
+                UriHelper.NavigateTo("/home");
+            }
+            else
+            {
+                CodePoints = await SearchAsync(_cancellationTokenSource.Token);
+            }
+        }
+        catch (OperationCanceledException)
+        {
+            return;
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine(ex.ToString());
+        }
+
+        StateHasChanged();
+    }
+
+    private bool RefreshParameters(string uri)
+    {
+        _cancellationTokenSource.Cancel();
+        _cancellationTokenSource.Dispose();
+        _cancellationTokenSource = new CancellationTokenSource();
+
+        if (!UriHelper.ToBaseRelativePath(UriHelper.GetBaseUriPrefix(), uri).StartsWith("/search", StringComparison.OrdinalIgnoreCase)) return false;
+
+        CodePoints = null;
+
+        if (QueryHelpers.ParseQuery(new Uri(uri).Query).TryGetValue("q", out var text))
+        {
+            Query = text.ToString();
+        }
+        else
+        {
+            Query = string.Empty;
+        }
+
+        return true;
+    }
+
+    private async Task<UnicodeBrowser.Client.Models.CodePoint[]> SearchAsync(CancellationToken cancellationToken)
+    {
+        var codePoints = await Http.GetJsonAsync<UnicodeBrowser.Client.Models.CodePoint[]>("/api/search?q=" + Uri.EscapeDataString(Query) + "&limit=100");
+        cancellationToken.ThrowIfCancellationRequested();
+        return codePoints;
+    }
+}

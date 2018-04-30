@@ -1,0 +1,62 @@
+﻿@page "/blocks"
+@page "/blocks/{blockName}"
+@inject HttpClient Http
+@inject ApplicationState ApplicationState
+
+<section>
+    @if (Blocks == null)
+    {
+        <div class="spinner"><i class="fas fa-2x fa-spinner fa-pulse"></i></div>
+    }
+    else
+    {
+        <div class="row content-with-sidebar">
+            <div class="col-3 sidebar">
+                <h3>Blocks</h3>
+                <ul class="nav flex-column nav-pills">
+                    @foreach (var block in Blocks)
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link@(string.Equals(block.Name, BlockName, StringComparison.OrdinalIgnoreCase) ? " active" : string.Empty)" href="/blocks/@Uri.EscapeDataString(block.Name)">@block.Name</a>
+                        </li>
+                    }
+                </ul>
+            </div>
+            <div class="col-9 scrollable-content">
+                @if (BlockName != null)
+                {
+                    <UnicodeBlockView Block="@SelectedBlock"></UnicodeBlockView>
+                }
+            </div>
+        </div>
+    }
+</section>
+
+@functions {
+    private UnicodeBrowser.Client.Models.BlockInformation[] Blocks { get; set; }
+
+    private string _blockName;
+    public string BlockName
+    {
+        get => _blockName;
+        set
+        {
+            _blockName = value != null ? Uri.UnescapeDataString(value) : null; // Workaround for Blazor not unescaping route segments
+            MapSelectedBlock();
+        }
+    }
+
+    public UnicodeBrowser.Client.Models.BlockInformation SelectedBlock { get; set; }
+
+    protected override async Task OnInitAsync()
+    {
+        Blocks = await ApplicationState.GetBlocksAsync();
+        MapSelectedBlock();
+    }
+
+    private void MapSelectedBlock()
+    {
+        SelectedBlock = Blocks?.FirstOrDefault(block => block.Name == BlockName);
+        StateHasChanged();
+    }
+}

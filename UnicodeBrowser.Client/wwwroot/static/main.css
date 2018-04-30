@@ -1,0 +1,130 @@
+﻿.splash {
+    text-align: center;
+    margin: 10% 0 0 0;
+    box-sizing: border-box;
+}
+
+    .splash .message {
+        font-size: 72px;
+        line-height: 72px;
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    }
+
+    .splash .fa-spinner {
+        text-align: center;
+        display: inline-block;
+        font-size: 72px;
+        margin-top: 50px;
+    }
+
+main.container-fluid {
+    margin-top: 5rem;
+}
+
+div.display-text-container {
+    -webkit-box-sizing: padding-box;
+    -moz-box-sizing: padding-box;
+    box-sizing: padding-box;
+    margin: auto;
+    border: 1px dashed lightgray;
+}
+
+div.display-text {
+    display: table-cell;
+    text-align: center;
+    vertical-align: middle;
+    font-family: 'AppleColorEmoji', 'Segoe UI', 'Segoe UI Emoji', 'Microsoft YaHei UI', 'Meiryo UI', 'Malgun Gothic', '?? ??', 'Leelawadee UI', 'Segoe UI Historic', 'Segoe UI Symbol', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 1rem;
+}
+
+    div.display-text > a {
+        color: inherit;
+        text-decoration: inherit;
+    }
+
+th.display-text {
+    width: 5.5rem;
+}
+
+th.code-point {
+    width: 6rem;
+}
+
+td.display-text {
+    text-align: center;
+}
+}
+
+table.code-point-table > thead > tr > th {
+    text-align: center;
+}
+
+table.code-point-table > tbody > tr > td:first-child {
+    vertical-align: middle;
+}
+
+table.code-point-table > tbody > tr > td > div.code-point {
+    font-size: 0.5rem;
+}
+
+table.code-point-table > tbody > tr > td > div.display-text-container {
+    width: 2rem;
+    height: 2rem;
+}
+
+table.code-point-table > tbody > tr > td > div.display-text-container > div.display-text {
+    font-size: 1rem;
+    width: 2rem;
+    height: 2rem;
+}
+
+.code-point-info > div.display-text-container {
+    width: 8rem;
+    height: 8rem;
+    margin: 0.5rem auto;
+}
+
+    .code-point-info > div.display-text-container > div.display-text {
+        width: 8rem;
+        height: 8rem;
+        font-size: 4rem;
+    }
+
+table.decomposition-table > tbody > tr > td {
+    vertical-align: middle;
+}
+
+    table.decomposition-table > tbody > tr > td.display-text > div.display-text-container {
+        width: 2rem;
+        height: 2rem;
+    }
+
+        table.decomposition-table > tbody > tr > td.display-text > div.display-text-container > div.display-text {
+            font-size: 1rem;
+            width: 2rem;
+            height: 2rem;
+        }
+
+div.row.content-with-sidebar {
+    position: fixed;
+    top: 4rem;
+    bottom: 1rem;
+    width: 100%;
+    z-index: 999;
+}
+
+.sidebar {
+    height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+    .sidebar + .scrollable-content {
+        height: 100%;
+        overflow: auto;
+    }
+
+div.spinner {
+    padding: 1rem 0;
+    text-align: center;
+}
