@@ -22,11 +22,12 @@
 </section>
 
 @functions {
-    public string HexCodePoint { get; set; }
+    [Parameter]
+    private string HexCodePoint { get; set; }
 
-    public string Error { get; set; }
+    private string Error { get; set; }
 
-    CodePoint CodePoint { get; set; }
+    private CodePoint CodePoint { get; set; }
 
     protected override async Task OnInitAsync()
     {

@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace UnicodeBrowser.Services
 {
-	public interface ICharacterSearchService
+	internal interface ICharacterSearchService
     {
         Task<IEnumerable<int>> FindCharactersAsync(string text);
     }

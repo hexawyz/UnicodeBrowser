@@ -9,7 +9,7 @@ using UnicodeBrowser.Services;
 namespace UnicodeBrowser.Controllers
 {
 	[Route("api/search")]
-    public class SearchController
+    internal sealed class SearchController
     {
         public ICharacterSearchService CharacterSearchService { get; }
 

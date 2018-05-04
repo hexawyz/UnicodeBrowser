@@ -1,4 +1,6 @@
-﻿.splash {
+﻿@import url("fonts.css");
+
+.splash {
     text-align: center;
     margin: 10% 0 0 0;
     box-sizing: border-box;
@@ -33,7 +35,24 @@ div.display-text {
     display: table-cell;
     text-align: center;
     vertical-align: middle;
-    font-family: 'AppleColorEmoji', 'Segoe UI', 'Segoe UI Emoji', 'Microsoft YaHei UI', 'Meiryo UI', 'Malgun Gothic', '?? ??', 'Leelawadee UI', 'Segoe UI Historic', 'Segoe UI Symbol', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: "AppleColorEmoji",
+        "Segoe UI",
+        "Segoe UI Emoji",
+        "Microsoft YaHei UI",
+        "Meiryo UI",
+        "Malgun Gothic",
+        "Leelawadee UI",
+        "Segoe UI Historic",
+        "Segoe UI Symbol",
+        Tahoma,
+        Geneva,
+        Verdana,
+        "Arial Unicode MS",
+        "BabelStone Runic",
+        "BabelStone Zanabazar",
+        "BabelStone Marchen",
+        "Tangut Yinchuan",
+        sans-serif;
     font-size: 1rem;
 }
 

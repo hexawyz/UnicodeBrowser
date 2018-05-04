@@ -1,0 +1,1 @@
+﻿The ````Tangut```` block contains characters from the Tangut script used to write the – since long extinct – Tangut language.

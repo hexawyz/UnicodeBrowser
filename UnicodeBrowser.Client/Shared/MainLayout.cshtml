@@ -1,11 +1,7 @@
-﻿@implements ILayoutComponent
+﻿@inherits BlazorLayoutComponent
 
 <NavMenu />
 
 <main role="main" class="container-fluid">
     @Body
 </main>
-
-@functions {
-    public RenderFragment Body { get; set; }
-}

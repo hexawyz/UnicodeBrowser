@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace UnicodeBrowser.MediaFormatters
 {
-	public class PlainTextInputFormatter : TextInputFormatter
+	internal sealed class PlainTextInputFormatter : TextInputFormatter
     {
         public PlainTextInputFormatter()
         {

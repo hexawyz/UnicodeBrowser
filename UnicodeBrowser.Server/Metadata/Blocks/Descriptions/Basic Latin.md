@@ -1,0 +1,1 @@
+﻿The ````Basic Latin```` block is a direct mapping of ASCII, and includes every character and control code from the ASCII encoding.

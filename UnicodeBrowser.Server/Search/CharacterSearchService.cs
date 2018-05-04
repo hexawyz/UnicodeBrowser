@@ -8,7 +8,7 @@ using UnicodeBrowser.Services;
 
 namespace UnicodeBrowser.Search
 {
-    public class CharacterSearchService : ICharacterSearchService
+    internal sealed class CharacterSearchService : ICharacterSearchService
     {
         private sealed class MatchedCodePointComparer : IComparer<KeyValuePair<int, int>>
         {

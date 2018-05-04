@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Blazor;
 using Microsoft.AspNetCore.Blazor.Services;
-using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 using UnicodeBrowser.Client.Models;

@@ -8,7 +8,7 @@ using UnicodeBrowser.Mvc;
 namespace UnicodeBrowser.Controllers
 {
 	[Route("api/codepoints")]
-    public class CodePointsController
+	internal sealed class CodePointsController
     {
 		[HttpGet]
 		[ResponseCache(CacheProfileName = "CodePointRangeCacheProfile")]

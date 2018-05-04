@@ -6,7 +6,7 @@ using System.Reflection;
 
 namespace UnicodeBrowser.Json
 {
-	public class FlagsEnumConverter : JsonConverter
+	internal sealed class FlagsEnumConverter : JsonConverter
     {
         private struct EnumValue
         {

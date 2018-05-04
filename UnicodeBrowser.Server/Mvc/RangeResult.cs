@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace UnicodeBrowser.Mvc
 {
-	public class RangeResult : ObjectResult
+	internal sealed class RangeResult : ObjectResult
     {
 		private readonly ContentRangeHeaderValue _range;
 

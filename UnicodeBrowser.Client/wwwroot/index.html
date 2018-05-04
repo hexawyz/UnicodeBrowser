@@ -22,18 +22,8 @@
     <script type="blazor-boot"></script>
 
     <script>
-        Blazor.registerFunction("registerFormForValidation", function (formId) {
-            document.getElementById(formId).addEventListener('submit', function (event) {
-                if (form.checkValidity() === false) {
-                    event.preventDefault();
-                    event.stopPropagation();
-                }
-                form.classList.add('was-validated');
-            }, false);
-        });
-
-        Blazor.registerFunction("checkFormValidity", function (formId) {
-            return document.getElementById(formId).checkValidity();
+        Blazor.registerFunction("checkFormValidity", function (form) {
+            return form.checkValidity();
         });
     </script>
 </body>

@@ -1,0 +1,20 @@
+﻿@font-face {
+	font-family: "BabelStone Runic";
+	src: url('fonts/BabelStoneRunic.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: "BabelStone Zanabazar";
+    src: url('fonts/BabelStoneZanabazar.ttf') format('truetype'),
+        url('fonts/BabelStoneZanabazar.woff') format('woff');
+}
+
+@font-face {
+    font-family: "BabelStone Marchen";
+    src: url('fonts/BabelStoneMarchen.ttf') format('truetype');
+}
+
+@font-face {
+	font-family: "Tangut Yinchuan";
+	src: url("fonts/TangutYinchuan.ttf") format("truetype");
+}

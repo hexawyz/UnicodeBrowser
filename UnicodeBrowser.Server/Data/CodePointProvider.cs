@@ -6,7 +6,7 @@ using System.Unicode;
 
 namespace UnicodeBrowser.Data
 {
-	public static class CodePointProvider
+	internal static class CodePointProvider
     {
         public static Models.CodePoint[] GetCodePoints(int offset, int limit)
         {

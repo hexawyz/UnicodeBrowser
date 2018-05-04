@@ -11,22 +11,25 @@
     <div class="card mb-3">
         <div class="card-header">Decompose text</div>
         <div class="card-body">
-            <form>
+            <ValidatedForm OnSubmit="@DecomposeText">
                 <div class="form-group">
                     <label for="textToDecomposeTextBox">Text to analyze</label>
                     <div class="input-group">
-                        <input id="textToDecomposeTextBox" type="text" class="form-control" bind="@Text" placeholder="Type or paste the text to analyze…" />
-                        <span class="input-group-append"><button type="submit" class="btn btn-primary" onclick="@DecomposeText"><i class="fas fa-cogs"></i><p class="sr-only">Decompose</p></button></span>
+                        <input id="textToDecomposeTextBox" type="text" class="form-control" bind="@Text" placeholder="Type or paste the text to analyze…" required />
+                        <div class="invalid-feedback order-1">
+                            Please enter some text.
+                        </div>
+                        <span class="input-group-append"><button type="submit" class="btn btn-primary"><i class="fas fa-cogs"></i><p class="sr-only">Decompose</p></button></span>
                     </div>
                 </div>
-            </form>
+            </ValidatedForm>
         </div>
     </div>
 
     <div class="card mb-3">
         <div class="card-header">Find code point</div>
         <div class="card-body">
-            <form id="codePointFinderForm" class="needs-validation@(IsHexCodePointFormValidated ? " was-validated" : "")" novalidate>
+            <ValidatedForm OnSubmit="@GoToCodePoint">
                 <div class="form-group">
                     <label for="hexCodePointTextBox">Code point</label>
                     <div class="input-group">
@@ -34,10 +37,10 @@
                         <div class="invalid-feedback order-1">
                             Please enter a valid hexadecimal number.
                         </div>
-                        <span class="input-group-append"><button type="submit" class="btn btn-success" onclick="@GoToCodePoint"><i class="fas fa-search"></i><p class="sr-only">Lookup</p></button></span>
+                        <span class="input-group-append"><button type="submit" class="btn btn-success"><i class="fas fa-search"></i><p class="sr-only">Lookup</p></button></span>
                     </div>
                 </div>
-            </form>
+            </ValidatedForm>
         </div>
     </div>
 
@@ -50,7 +53,7 @@
             }
             else
             {
-                <form>
+                <ValidatedForm OnSubmit="@BrowseBlock">
                     <div class="form-group">
                         <label for="blockComboBox">Unicode block</label>
                         <div class="input-group">
@@ -60,25 +63,25 @@
                                     <option value="@block.Name">@block.Name</option>
                                 }
                             </select>
-                            <span class="input-group-append"><button type="submit" class="btn btn-success" onclick="@BrowseBlock"><i class="fas fa-arrow-right"></i><p class="sr-only">Go</p></button></span>
+                            <span class="input-group-append"><button type="submit" class="btn btn-success"><i class="fas fa-arrow-right"></i><p class="sr-only">Go</p></button></span>
                         </div>
                     </div>
-                </form>
+                </ValidatedForm>
             }
         </div>
     </div>
 </section>
 
 @functions {
-    public string Text { get; set; }
-    public string HexCodePoint { get; set; }
-    public bool IsHexCodePointFormValidated { get; set; }
-    public string SelectedBlockName { get; set; }
-    public UnicodeBrowser.Client.Models.BlockInformation[] Blocks { get; set; }
+    private string Text { get; set; }
+    private string HexCodePoint { get; set; }
+    private string SelectedBlockName { get; set; }
+    private UnicodeBrowser.Client.Models.BlockInformation[] Blocks { get; set; }
 
     protected override async Task OnInitAsync()
     {
         Blocks = await ApplicationState.GetBlocksAsync();
+        SelectedBlockName = Blocks[0].Name;
     }
 
     public void DecomposeText()
@@ -88,11 +91,9 @@
 
     public void GoToCodePoint()
     {
-        IsHexCodePointFormValidated = true;
-
-        if (RegisteredFunction.Invoke<bool>("checkFormValidity", "codePointFinderForm") && int.TryParse(HexCodePoint, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out _))
+        if (int.TryParse(HexCodePoint, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out int codePoint))
         {
-            UriHelper.NavigateTo("/codepoints/" + Uri.EscapeDataString(HexCodePoint));
+            UriHelper.NavigateTo("/codepoints/" + Uri.EscapeDataString(codePoint.ToHexadecimal()));
         }
     }
 

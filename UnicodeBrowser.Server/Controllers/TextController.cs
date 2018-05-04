@@ -6,7 +6,7 @@ using UnicodeBrowser.Data;
 namespace UnicodeBrowser.Controllers
 {
 	[Route("api/text")]
-    public class TextController
+	internal sealed class TextController
     {
         [HttpPost("decompose")]
         [ResponseCache(CacheProfileName = "TextDecompositionCacheProfile")]

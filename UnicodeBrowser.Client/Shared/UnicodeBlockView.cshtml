@@ -4,6 +4,8 @@
 {
     <h2>@Block.Name <small>@Block.Range.FirstCodePoint.ToCodePointRepresentation() - @Block.Range.LastCodePoint.ToCodePointRepresentation()</small></h2>
 
+    <MarkdownView class="block-description" Text="@Block.Description"/>
+
     @if (!string.IsNullOrEmpty(ErrorMessage))
     {
         <div class="alert alert-danger" role="alert"><pre>@ErrorMessage</pre></div>
@@ -86,7 +88,8 @@
 @functions {
     private UnicodeBrowser.Client.Models.BlockInformation _block;
 
-    public UnicodeBrowser.Client.Models.BlockInformation Block
+    [Parameter]
+    private UnicodeBrowser.Client.Models.BlockInformation Block
     {
         get => _block;
         set

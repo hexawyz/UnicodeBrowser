@@ -10,6 +10,7 @@ The application is hosted there: https://unicode-browser.azurewebsites.net/home
 * View detailed information on a code point.
 * Browse code points in a given Unicode Block.
 * Search any character by name.
+* Display additional information (in Markdown format) on pages dedicated to Unicode blocks.
 
 ## Try it out
 
@@ -19,15 +20,17 @@ The application is hosted there: https://unicode-browser.azurewebsites.net/home
 * https://unicode-browser.azurewebsites.net/codepoints/1F365
 * https://unicode-browser.azurewebsites.net/search?q=Tree
 * https://unicode-browser.azurewebsites.net/decomposition?text=👨🏿‍👩🏻‍👧🏽‍👦🏽
+* https://unicode-browser.azurewebsites.net/blocks/Tangut
+* https://unicode-browser.azurewebsites.net/blocks/Tags
 
 ## Main technologies used
 
 * [ASP.NET Core](https://dot.net/) 2.1 (.NET Core 2.1.300-preview2-008533)
 * [Blazor](https://blazor.net/) 0.2.0
+* [Markdig](https://github.com/lunet-io/markdig) 0.15.0
 * [Bootstrap](https://getbootstrap.com/) 4.1
 * [Font Awesome](https://fontawesome.com/) 5.0.10
 * [jQuery](https://jquery.com/) 3.3.1 (Beacuse Bootstrap JS still seems to require it)
-
 
 ## Documentation links
 
@@ -57,13 +60,11 @@ Because of that, I found myself stumbling on things that I thought would be triv
 e.g
 
 * I was quite disappointed that I could not share my Model classes between the Server and Client, as Blazor currently uses SimpleJson, which is hugely limited. 😅
-  (And sadly, NewtonSoft.Json doen't seem to work well enough for now. 😭)
+  (And sadly, Newtonsoft.Json doen't seem to work well enough for now. 😭)
 * Binding to query string parameters has to be done manually
 * Pages sometimes need to manually listen for location changes (e.g. for URL changes on the same page)
-* Very few DOM events are actually supported.
-  e.g. binding to the "submit" event on forms will currently fail, despite the documentation implying that it would work.
 * There is no state management out of the box. (e.g. What happens when you go back and forward in the history)
   => I solved that by not requiring state management at all, and always relying on the route or query string for that.
-* The component lifecycle did not seem to be very extensible. (e.g. a base class for components could not reliably add behavior to OnInitAsync() and such)
+* The component lifecycle did not seem to be very extensible: it would be difficult to add a complex behavior in a base class (e.g. displaying a spinner before the content is loaded)
 
 Hopefully, things will improve a lot in the next versions, and what I said will become obsolete. 🙂
