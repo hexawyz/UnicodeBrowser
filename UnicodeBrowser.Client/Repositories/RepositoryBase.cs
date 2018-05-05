@@ -1,12 +1,17 @@
-﻿namespace UnicodeBrowser.Client.Repositories
+﻿using System;
+using System.Net.Http;
+
+namespace UnicodeBrowser.Client.Repositories
 {
 	internal abstract class RepositoryBase
     {
-		public ApplicationState ApplicationState { get; }
+		protected ApplicationState ApplicationState { get; }
+		protected HttpClient HttpClient { get; }
 
-		protected RepositoryBase(ApplicationState applicationState)
+		protected RepositoryBase(ApplicationState applicationState, HttpClient httpClient)
 		{
-			ApplicationState = applicationState;
+			ApplicationState = applicationState ?? throw new ArgumentNullException(nameof(applicationState));
+			HttpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
 		}
 
 		protected void BeginAsyncOperation() => ApplicationState.NotifyOperationStart();

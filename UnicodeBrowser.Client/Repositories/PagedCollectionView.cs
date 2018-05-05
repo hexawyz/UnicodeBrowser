@@ -9,7 +9,6 @@ namespace UnicodeBrowser.Client.Repositories
 	internal class PagedCollectionView<TItem> : RepositoryBase
     {
 		private readonly object _syncRoot = new object();
-		private readonly HttpClient _httpClient;
 
 		/// <summary>Gets the URI used to access the collection.</summary>
 		private string Uri { get; }
@@ -47,9 +46,9 @@ namespace UnicodeBrowser.Client.Repositories
 		//		throw new ArgumentOutOfRangeException(nameof(maxPageSize));
 		//}
 
-		protected PagedCollectionView(ApplicationState applicationState, HttpClient httpClient, string uri, int baseIndex, int itemCount, int maxPageSize) : base(applicationState)
+		protected PagedCollectionView(ApplicationState applicationState, HttpClient httpClient, string uri, int baseIndex, int itemCount, int maxPageSize)
+			: base(applicationState, httpClient)
 		{
-			_httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
 			Uri = uri;
 			BaseIndex = baseIndex >= 0 ?
 				baseIndex :
@@ -106,7 +105,7 @@ namespace UnicodeBrowser.Client.Repositories
 				int remainingItemCount = Items != null ? Items.Length - loadedItemCount : MaxPageSize;
 				int requestedItemCount = Math.Min(MaxPageSize, remainingItemCount);
 
-				(long count, var items) = await _httpClient.GetItemsAsync<TItem>(Uri, BaseIndex + loadedItemCount, requestedItemCount).ConfigureAwait(false);
+				(long count, var items) = await HttpClient.GetItemsAsync<TItem>(Uri, BaseIndex + loadedItemCount, requestedItemCount).ConfigureAwait(false);
 
 				if (count > requestedItemCount) throw new InvalidDataException("The API returned more items than requested.");
 

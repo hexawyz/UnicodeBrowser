@@ -10,30 +10,39 @@ namespace UnicodeBrowser.Client.Repositories
 	internal sealed class BlockRepository : RepositoryBase
     {
 		private readonly object _syncRoot = new object();
-		private readonly HttpClient _httpClient;
 
 		private volatile Task<BlockInformation[]> _blockRetrievalTask;
 
 		public BlockRepository(ApplicationState applicationState, HttpClient httpClient)
-			: base(applicationState)
+			: base(applicationState, httpClient)
 		{
-			_httpClient = httpClient;
 		}
 
 		public Task<BlockInformation[]> GetBlocksAsync()
 		{
-			if (_blockRetrievalTask == null || _blockRetrievalTask.IsFaulted)
+			var blockRetrievalTask = _blockRetrievalTask;
+
+			if (blockRetrievalTask == null || blockRetrievalTask.IsFaulted)
 			{
 				lock (_syncRoot)
 				{
-					if (_blockRetrievalTask == null || _blockRetrievalTask.IsFaulted)
+					if ((blockRetrievalTask = _blockRetrievalTask) == null || blockRetrievalTask.IsFaulted)
 					{
-						_blockRetrievalTask = GetBlocksInternalAsync();
+						blockRetrievalTask = _blockRetrievalTask = GetBlocksInternalAsync();
 					}
 				}
 			}
 
-			return _blockRetrievalTask;
+			return blockRetrievalTask;
+		}
+
+		public BlockInformation[] TryGetBlocks()
+		{
+			var blockRetrievalTask = _blockRetrievalTask;
+
+			return blockRetrievalTask != null && blockRetrievalTask.Status == TaskStatus.RanToCompletion ?
+				blockRetrievalTask.Result :
+				null;
 		}
 
 		private async Task<BlockInformation[]> GetBlocksInternalAsync()
@@ -41,7 +50,7 @@ namespace UnicodeBrowser.Client.Repositories
 			BeginAsyncOperation();
 			try
 			{
-				return await _httpClient.GetJsonAsync<BlockInformation[]>("/api/blocks");
+				return await HttpClient.GetJsonAsync<BlockInformation[]>("/api/blocks");
 			}
 			finally
 			{

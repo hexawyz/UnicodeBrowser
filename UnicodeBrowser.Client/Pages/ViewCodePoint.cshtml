@@ -1,7 +1,6 @@
 ﻿@using UnicodeBrowser.Client.Models
 @page "/codepoints/{hexCodePoint}"
-@inject HttpClient Http
-@inject ApplicationState ApplicationState
+@inject CodePointRepository CodePointRepository
 
 <section>
     <h1>Code Point Information</h1>
@@ -25,12 +24,10 @@
     [Parameter]
     private string HexCodePoint { get; set; }
 
-    private string Error { get; set; }
-
     private CodePoint CodePoint { get; set; }
 
     protected override async Task OnInitAsync()
     {
-        CodePoint = await Http.GetJsonAsync<CodePoint>($"/api/codepoints/{HexCodePoint}");
+        CodePoint = await CodePointRepository.GetCodePointAsync(int.Parse(HexCodePoint, NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture));
     }
 }

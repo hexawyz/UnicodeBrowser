@@ -31,8 +31,8 @@ namespace UnicodeBrowser.Server
 					options =>
 					{
 						options.InputFormatters.Add(new PlainTextInputFormatter());
-						options.CacheProfiles.Add("BlockCacheProfile", new CacheProfile { Duration = 7 * 24 * 60 * 60, Location = ResponseCacheLocation.Any });
-						options.CacheProfiles.Add("CodePointCacheProfile", new CacheProfile { Duration = 7 * 24 * 60 * 60, Location = ResponseCacheLocation.Client });
+						options.CacheProfiles.Add("BlockCacheProfile", new CacheProfile { Duration = 24 * 60 * 60, Location = ResponseCacheLocation.Any });
+						options.CacheProfiles.Add("CodePointCacheProfile", new CacheProfile { Duration = 24 * 60 * 60, Location = ResponseCacheLocation.Client });
 						options.CacheProfiles.Add("CodePointRangeCacheProfile", new CacheProfile { Duration = 24 * 60 * 60, Location = ResponseCacheLocation.Client, VaryByHeader = "Range" });
 						options.CacheProfiles.Add("TextDecompositionCacheProfile", new CacheProfile { Duration = 60 * 60, Location = ResponseCacheLocation.Client });
 					}
