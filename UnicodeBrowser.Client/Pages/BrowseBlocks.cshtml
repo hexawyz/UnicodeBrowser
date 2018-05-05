@@ -1,7 +1,6 @@
 ﻿@page "/blocks"
 @page "/blocks/{blockName}"
-@inject HttpClient Http
-@inject ApplicationState ApplicationState
+@inject BlockRepository BlockRepository
 
 <section>
     @if (Blocks == null)
@@ -52,7 +51,7 @@
 
     protected override async Task OnInitAsync()
     {
-        Blocks = await ApplicationState.GetBlocksAsync();
+        Blocks = await BlockRepository.GetBlocksAsync();
         MapSelectedBlock();
     }
 

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Blazor.Browser.Services;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using UnicodeBrowser.Client.Repositories;
 
 namespace UnicodeBrowser.Client
 {
@@ -12,7 +13,9 @@ namespace UnicodeBrowser.Client
             var serviceProvider = new BrowserServiceProvider(services =>
             {
 				services.AddSingleton<ApplicationState>();
-            });
+				services.AddSingleton<BlockRepository>();
+				services.AddSingleton<BlockCodePointRepository>();
+			});
 
             new BrowserRenderer(serviceProvider).AddComponent<App>("app");
         }

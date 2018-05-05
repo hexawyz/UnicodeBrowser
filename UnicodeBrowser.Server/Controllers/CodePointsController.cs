@@ -25,7 +25,7 @@ namespace UnicodeBrowser.Controllers
 			}
 			else
 			{
-				range = new RangeHeaderValue(0, 128) { Unit = "items" };
+				range = new RangeHeaderValue(0, 256) { Unit = "items" };
 			}
 
 			// Reject multipart range requests for now…
@@ -38,8 +38,8 @@ namespace UnicodeBrowser.Controllers
 
 			int offset = checked((int)(firstRange.From ?? 0));
 			int count = firstRange.To != null ?
-				Math.Min(128, checked((int)firstRange.To.GetValueOrDefault()) - offset + 1) :
-				128;
+				Math.Min(256, checked((int)firstRange.To.GetValueOrDefault()) - offset + 1) :
+				256;
 
 			return new RangeResult(CodePointProvider.GetCodePoints(offset, count), new ContentRangeHeaderValue(offset, offset + count - 1, 0x110000) { Unit = "items" });
 		}

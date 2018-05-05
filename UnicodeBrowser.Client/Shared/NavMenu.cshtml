@@ -1,9 +1,13 @@
-﻿@implements IDisposable
-@inject Microsoft.AspNetCore.Blazor.Services.IUriHelper UriHelper
-@inject ApplicationState ApplicationState
+﻿@inject Microsoft.AspNetCore.Blazor.Services.IUriHelper UriHelper
 
-<nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-primary">
+<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-primary">
     <a class="navbar-brand" href="/">Unicode Browser</a>
+
+    <ApplicationBusyIndicator class="navbar-text ml-auto mr-3 d-md-none" />
+
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
@@ -18,43 +22,18 @@
             </li>
         </ul>
 
-        <form class="form-inline my-2 my-lg-0">
-            <input class="form-control mr-sm-2" type="search" name="q" bind="@CharacterSearchText" placeholder="Search a character…" aria-label="Search" autocomplete="off" />
-            <button class="btn btn-success my-2 my-sm-0" type="submit" onclick="@SearchCharacter"><i class="fas fa-search"></i><p class="sr-only">Search</p></button>
+        <ApplicationBusyIndicator class="navbar-text ml-auto mr-3 d-none d-md-inline-block" />
+
+        <form class="form-inline mt-2 mt-md-0">
+            <div class="input-group mb-2 mb-md-0">
+                <input class="form-control" type="search" name="q" bind="@CharacterSearchText" placeholder="Search a character…" aria-label="Search" autocomplete="off" />
+                <span class="input-group-append"><button class="btn btn-success" type="submit" onclick="@SearchCharacter"><i class="fas fa-search"></i><p class="sr-only">Search</p></button></span>
+            </div>
         </form>
     </div>
-
-    @if (ApplicationState.IsBusy)
-    {
-        <span class="navbar-text pl-3 ml-auto mr-3">
-            <i class="fas fa-spinner fa-pulse"></i>
-        </span>
-    }
-
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
 </nav>
 
 @functions {
-    protected override void OnInit()
-    {
-        ApplicationState.PropertyChanged += OnApplicationStatePropertyChanged;
-    }
-
-    public void Dispose()
-    {
-        ApplicationState.PropertyChanged -= OnApplicationStatePropertyChanged;
-    }
-
-    private void OnApplicationStatePropertyChanged(object sender, PropertyChangedEventArgs e)
-    {
-        if (e.PropertyName == nameof(ApplicationState.IsBusy))
-        {
-            StateHasChanged();
-        }
-    }
-
     private string CharacterSearchText { get; set; }
 
     public void SearchCharacter()

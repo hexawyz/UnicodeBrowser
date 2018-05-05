@@ -3,7 +3,7 @@
 @using Microsoft.AspNetCore.Blazor.Browser.Interop
 @using System.Globalization
 @inject Microsoft.AspNetCore.Blazor.Services.IUriHelper UriHelper
-@inject ApplicationState ApplicationState
+@inject BlockRepository BlockRepository
 
 <section>
     <h1>Home</h1>
@@ -80,7 +80,7 @@
 
     protected override async Task OnInitAsync()
     {
-        Blocks = await ApplicationState.GetBlocksAsync();
+        Blocks = await BlockRepository.GetBlocksAsync();
         SelectedBlockName = Blocks[0].Name;
     }
 

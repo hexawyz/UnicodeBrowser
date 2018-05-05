@@ -9,7 +9,7 @@ namespace UnicodeBrowser.Client.Shared
 	/// This component will wrap the converted markdown inside a &lt;div&gt; tag with the <c>mardkown</c> class.
 	/// Other classes can be applied by using the class attribute on the component.
 	/// </remarks>
-	internal sealed class MarkdownView : BlazorComponent
+	public sealed class MarkdownView : BlazorComponent
     {
 		private MarkdownDocument _document;
 
