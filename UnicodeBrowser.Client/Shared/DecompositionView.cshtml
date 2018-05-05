@@ -1,5 +1,5 @@
 ﻿@using System.Text
-@inject HttpClient Http
+@inject DecompositionRepository DecompositionRepository
 
 @if (CodePoints == null)
 {
@@ -51,19 +51,12 @@ else
 
     private UnicodeBrowser.Client.Models.CodePoint[] CodePoints { get; set; }
 
-    private async Task DecomposeTextAsyncAsync()
-    {
-        var response = await Http.PostAsync("/api/text/decompose", new StringContent(Text, Encoding.UTF8));
-
-        CodePoints = JsonUtil.Deserialize<UnicodeBrowser.Client.Models.CodePoint[]>(await response.Content.ReadAsStringAsync());
-    }
-
     private async void UpdateDecompositionAsync()
     {
         // TODO: Set a delay before showing the spinner
         CodePoints = null;
         StateHasChanged();
-        await DecomposeTextAsyncAsync();
+        CodePoints = await DecompositionRepository.DecomposeTextAsync(Text, CancellationToken.None);
         StateHasChanged();
     }
 }

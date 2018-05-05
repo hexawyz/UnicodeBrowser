@@ -16,6 +16,8 @@ namespace UnicodeBrowser.Client
 				services.AddSingleton<BlockRepository>();
 				services.AddSingleton<BlockCodePointRepository>();
 				services.AddSingleton<CodePointRepository>();
+				services.AddSingleton<DecompositionRepository>();
+				services.AddSingleton<SearchRepository>();
 			});
 
 			new BrowserRenderer(serviceProvider).AddComponent<App>("app");

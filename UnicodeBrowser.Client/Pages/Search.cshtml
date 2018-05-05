@@ -1,7 +1,7 @@
 ﻿@page "/search"
 @implements IDisposable
 @inject Microsoft.AspNetCore.Blazor.Services.IUriHelper UriHelper
-@inject HttpClient Http
+@inject SearchRepository SearchRepository
 
 <section>
     <h1>Search Results</h1>
@@ -64,7 +64,7 @@
             }
             else
             {
-                CodePoints = await SearchAsync(_cancellationTokenSource.Token);
+                CodePoints = await SearchRepository.SearchAsync(Query, _cancellationTokenSource.Token);
             }
         }
     }
@@ -86,7 +86,7 @@
             }
             else
             {
-                CodePoints = await SearchAsync(_cancellationTokenSource.Token);
+                CodePoints = await SearchRepository.SearchAsync(Query, _cancellationTokenSource.Token);
             }
         }
         catch (OperationCanceledException)
@@ -121,12 +121,5 @@
         }
 
         return true;
-    }
-
-    private async Task<UnicodeBrowser.Client.Models.CodePoint[]> SearchAsync(CancellationToken cancellationToken)
-    {
-        var codePoints = await Http.GetJsonAsync<UnicodeBrowser.Client.Models.CodePoint[]>("/api/search?q=" + Uri.EscapeDataString(Query) + "&limit=100");
-        cancellationToken.ThrowIfCancellationRequested();
-        return codePoints;
     }
 }
