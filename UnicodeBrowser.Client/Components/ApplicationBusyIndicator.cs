@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Blazor.RenderTree;
 using System;
 using System.ComponentModel;
 
-namespace UnicodeBrowser.Client.Shared
+namespace UnicodeBrowser.Client.Components
 {
 	public sealed class ApplicationBusyIndicator : BlazorComponent, IDisposable
 	{

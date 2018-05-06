@@ -23,6 +23,10 @@ main.container-fluid {
     margin-top: 5rem;
 }
 
+div.markdown {
+    background-color: #f8f9fa;
+}
+
 div.display-text-container {
     -webkit-box-sizing: padding-box;
     -moz-box-sizing: padding-box;
@@ -31,7 +35,7 @@ div.display-text-container {
     border: 1px dashed lightgray;
 }
 
-div.display-text {
+div.display-text, td.display-text {
     display: table-cell;
     text-align: center;
     vertical-align: middle;
@@ -56,9 +60,21 @@ div.display-text {
     font-size: 1rem;
 }
 
-    div.display-text > a {
+    div.display-text > a, td.display-text > a {
         color: inherit;
         text-decoration: inherit;
+    }
+
+td.display-text {
+    padding: 0;
+}
+
+    td.display-text:not(.bg-warning):hover {
+        background-color: #007bff;
+    }
+
+    td.display-text > a {
+        display: block;
     }
 
 th.display-text {
@@ -69,31 +85,19 @@ th.code-point {
     width: 6rem;
 }
 
-td.display-text {
-    text-align: center;
-}
-}
-
 table.code-point-table > thead > tr > th {
     text-align: center;
 }
 
 table.code-point-table > tbody > tr > td:first-child {
     vertical-align: middle;
+    text-align: right;
+    max-width: 2.5rem;
 }
 
-table.code-point-table > tbody > tr > td > div.code-point {
-    font-size: 0.5rem;
-}
-
-table.code-point-table > tbody > tr > td > div.display-text-container {
-    width: 2rem;
-    height: 2rem;
-}
-
-table.code-point-table > tbody > tr > td > div.display-text-container > div.display-text {
+table.code-point-table > tbody > tr > td.display-text {
     font-size: 1rem;
-    width: 2rem;
+    min-width: 2rem;
     height: 2rem;
 }
 

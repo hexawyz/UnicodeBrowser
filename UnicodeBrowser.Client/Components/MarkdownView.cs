@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Blazor.Components;
 using Microsoft.AspNetCore.Blazor.RenderTree;
 
-namespace UnicodeBrowser.Client.Shared
+namespace UnicodeBrowser.Client.Components
 {
 	/// <summary>A Blazor component for rendering Markdown.</summary>
 	/// <remarks>

@@ -21,7 +21,7 @@ else
             @foreach (var codePoint in CodePoints)
             {
                 <tr>
-                    <td class="display-text"><div class="display-text-container"><div class="display-text"><a href="/codepoints/@codePoint.Index.ToHexadecimal()">@codePoint.DisplayText</a></div></div></td>
+                    <td class="display-text"><a href="/codepoints/@codePoint.Index.ToHexadecimal()">@codePoint.DisplayText</a></td>
                     <td class="code-point"><a href="/codepoints/@codePoint.Index.ToHexadecimal()">@codePoint.Index.ToCodePointRepresentation()</a></td>
                     <td class="name">@codePoint.Name</td>
                     <td class="unicode-category">@codePoint.Category.LongName (@codePoint.Category.ShortName)</td>

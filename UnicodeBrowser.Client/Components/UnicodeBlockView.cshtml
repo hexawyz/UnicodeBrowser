@@ -16,7 +16,7 @@
             <table class="table table-sm table-bordered code-point-table">
                 <thead>
                     <tr>
-                        <th></th>
+                        <th class="bg-light"></th>
                         <th>0</th>
                         <th>1</th>
                         <th>2</th>
@@ -50,14 +50,13 @@
                                 {
                                     if (codePointIndex >= 0 && codePointIndex < codePoints.Length && codePoints[codePointIndex] is UnicodeBrowser.Client.Models.CodePoint codePoint)
                                     {
-                                        <td class="code-point-view" title="@codePoint.GetDisplayName()">
-                                            <div class="display-text-container"><div class="display-text"><a href="/codepoints/@codePoint.Index.ToHexadecimal()">@codePoint.DisplayText</a></div></div>
-                                            <div class="code-point text-info text-center"><a href="/codepoints/@codePoint.Index.ToHexadecimal()">@codePoint.Index.ToCodePointRepresentation()</a></div>
+                                        <td class="display-text" title="@codePoint.Index.ToCodePointRepresentation() - @codePoint.GetDisplayName()">
+                                            <a href="/codepoints/@codePoint.Index.ToHexadecimal()">@codePoint.DisplayText</a>
                                         </td>
                                     }
                                     else
                                     {
-                                        <td class="code-point-view"></td>
+                                        <td class="display-text bg-warning" title="Not assigned"></td>
                                     }
                                 }
                             </tr>

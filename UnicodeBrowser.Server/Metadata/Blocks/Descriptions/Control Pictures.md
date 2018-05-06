@@ -1,0 +1,1 @@
+﻿The ````Control Pictures```` block contains characters for graphically representing various control characters, such as C0 control codes from the [Basic Latin](/blocks/Basic%20Latin) block.
