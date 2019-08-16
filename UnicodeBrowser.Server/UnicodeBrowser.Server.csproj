@@ -11,7 +11,9 @@
     <PackageReference Include="Serilog.AspNetCore" />
     <PackageReference Include="Serilog.Sinks.Async" />
     <PackageReference Include="Serilog.Sinks.Console" />
-    <PackageReference Include="UnicodeInformation" />
+		<PackageReference Include="UnicodeInformation" />
+		<PackageReference Include="System.Collections" Version="4.3.0" />
+		<PackageReference Include="System.Runtime.Extensions" Version="4.3.0" />
   </ItemGroup>
 
   <ItemGroup>
