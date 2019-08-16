@@ -1,17 +1,15 @@
-﻿using Microsoft.AspNetCore.Blazor.Server;
+using System.Linq;
+using System.Net.Mime;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.DependencyInjection;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
-using Newtonsoft.Json.Serialization;
-using System.Linq;
-using System.Net.Mime;
+using Microsoft.Extensions.Hosting;
 using UnicodeBrowser.Controllers;
-using UnicodeBrowser.Json;
 using UnicodeBrowser.MediaFormatters;
 using UnicodeBrowser.Mvc;
 using UnicodeBrowser.Search;
@@ -55,16 +53,16 @@ namespace UnicodeBrowser.Server
 						}
 					}
 				)
-				.AddJsonFormatters
+				.AddJsonOptions
 				(
 					options =>
 					{
-						//options.ContractResolver = new CamelCasePropertyNamesContractResolver();
-						options.ContractResolver = new DefaultContractResolver();
-						options.Converters.Add(new FlagsEnumConverter());
-						options.Converters.Add(new StringEnumConverter());
-						options.DefaultValueHandling = DefaultValueHandling.Ignore;
-						options.NullValueHandling = NullValueHandling.Ignore;
+						var jsonSerializerOptions = options.JsonSerializerOptions;
+						jsonSerializerOptions.PropertyNameCaseInsensitive = false;
+						jsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+						jsonSerializerOptions.IgnoreNullValues = true;
+						jsonSerializerOptions.IgnoreReadOnlyProperties = false;
+						jsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
 					}
 				)
 				.AddControllersAsServices();
@@ -73,8 +71,7 @@ namespace UnicodeBrowser.Server
 			{
 				options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(new[]
 				{
-					MediaTypeNames.Application.Octet,
-					WasmMediaTypeNames.Application.Wasm,
+					MediaTypeNames.Application.Octet
 				});
 			});
 
@@ -88,18 +85,26 @@ namespace UnicodeBrowser.Server
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-		public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+		public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
 		{
 			app.UseResponseCompression();
 
-			if (env.IsDevelopment())
+			 if (env.IsDevelopment())
 			{
 				app.UseDeveloperExceptionPage();
+				app.UseBlazorDebugging();
 			}
 
-			app.UseMvc();
+			app.UseStaticFiles();
+			app.UseClientSideBlazorFiles<Client.Startup>();
 
-			app.UseBlazor<Client.Program>();
+			app.UseRouting();
+
+			app.UseEndpoints(endpoints =>
+			{
+				endpoints.MapDefaultControllerRoute();
+				endpoints.MapFallbackToClientSideBlazor<Client.Startup>("index.html");
+			});
 		}
 	}
 }

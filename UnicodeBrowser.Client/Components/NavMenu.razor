@@ -1,4 +1,4 @@
-﻿@inject Microsoft.AspNetCore.Blazor.Services.IUriHelper UriHelper
+@inject Microsoft.AspNetCore.Components.IUriHelper UriHelper
 
 <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-primary">
     <a class="navbar-brand" href="/">Unicode Browser</a>
@@ -24,16 +24,16 @@
 
         <ApplicationBusyIndicator class="navbar-text ml-auto mr-3 d-none d-md-inline-block" />
 
-        <form class="form-inline mt-2 mt-md-0">
+        <form class="form-inline mt-2 mt-md-0" @onsubmit="SearchCharacter">
             <div class="input-group mb-2 mb-md-0">
-                <input class="form-control" type="search" name="q" bind="@CharacterSearchText" placeholder="Search a character…" aria-label="Search" autocomplete="off" />
-                <span class="input-group-append"><button class="btn btn-success" type="submit" onclick="@SearchCharacter"><i class="fas fa-search"></i><p class="sr-only">Search</p></button></span>
+                <input class="form-control" type="search" name="q" @bind="CharacterSearchText" placeholder="Search a character…" aria-label="Search" autocomplete="off" />
+                <span class="input-group-append"><button class="btn btn-success" type="submit"><i class="fas fa-search"></i><p class="sr-only">Search</p></button></span>
             </div>
         </form>
     </div>
 </nav>
 
-@functions {
+@code {
     private string CharacterSearchText { get; set; }
 
     public void SearchCharacter()

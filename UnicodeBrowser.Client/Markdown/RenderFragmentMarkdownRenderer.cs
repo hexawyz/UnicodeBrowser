@@ -2,7 +2,7 @@
 using Markdig.Renderers.Html;
 using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
-using Microsoft.AspNetCore.Blazor.RenderTree;
+using Microsoft.AspNetCore.Components.RenderTree;
 using System;
 using System.Globalization;
 using System.Text;
@@ -266,7 +266,7 @@ namespace UnicodeBrowser.Client
 	{
 		protected override void Write(RenderFragmentMarkdownRenderer renderer, EmphasisInline obj)
 		{
-			renderer.WriteElementStart(obj.IsDouble ? "strong" : "em")
+			renderer.WriteElementStart(obj.DelimiterCount == 2 ? "strong" : "em")
 				   .WriteAttributes(obj.TryGetAttributes())
 				   .WriteChildren(obj);
 			renderer.WriteElementEnd();

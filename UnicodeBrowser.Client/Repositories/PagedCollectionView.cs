@@ -105,7 +105,7 @@ namespace UnicodeBrowser.Client.Repositories
 				int remainingItemCount = Items != null ? Items.Length - loadedItemCount : MaxPageSize;
 				int requestedItemCount = Math.Min(MaxPageSize, remainingItemCount);
 
-				(long count, var items) = await HttpClient.GetItemsAsync<TItem>(Uri, BaseIndex + loadedItemCount, requestedItemCount).ConfigureAwait(false);
+				(long count, var items) = await HttpClient.GetItemRangeAsync<TItem>(Uri, BaseIndex + loadedItemCount, requestedItemCount).ConfigureAwait(false);
 
 				if (count > requestedItemCount) throw new InvalidDataException("The API returned more items than requested.");
 

@@ -1,8 +1,7 @@
-﻿@page "/"
+@page "/"
 @page "/home"
-@using Microsoft.AspNetCore.Blazor.Browser.Interop
 @using System.Globalization
-@inject Microsoft.AspNetCore.Blazor.Services.IUriHelper UriHelper
+@inject Microsoft.AspNetCore.Components.IUriHelper UriHelper
 @inject BlockRepository BlockRepository
 
 <section>
@@ -15,7 +14,7 @@
                 <div class="form-group">
                     <label for="textToDecomposeTextBox">Text to analyze</label>
                     <div class="input-group">
-                        <input id="textToDecomposeTextBox" type="text" class="form-control" bind="@Text" placeholder="Type or paste the text to analyze…" required />
+                        <input id="textToDecomposeTextBox" type="text" class="form-control" @bind="Text" placeholder="Type or paste the text to analyze…" required />
                         <div class="invalid-feedback order-1">
                             Please enter some text.
                         </div>
@@ -33,7 +32,7 @@
                 <div class="form-group">
                     <label for="hexCodePointTextBox">Code point</label>
                     <div class="input-group">
-                        <input id="hexCodePointTextBox" type="text" class="form-control" bind="@HexCodePoint" placeholder="Type an hexadecimal code point number…" required maxlength="6" pattern="[0-9a-fA-F]{1,6}" />
+                        <input id="hexCodePointTextBox" type="text" class="form-control" @bind="HexCodePoint" placeholder="Type an hexadecimal code point number…" required maxlength="6" pattern="[0-9a-fA-F]{1,6}" />
                         <div class="invalid-feedback order-1">
                             Please enter a valid hexadecimal number.
                         </div>
@@ -57,7 +56,7 @@
                     <div class="form-group">
                         <label for="blockComboBox">Unicode block</label>
                         <div class="input-group">
-                            <select id="blockComboBox" class="form-control" bind="@SelectedBlockName">
+                            <select id="blockComboBox" class="form-control" @bind="SelectedBlockName">
                                 @foreach (var block in Blocks)
                                 {
                                     <option value="@block.Name">@block.Name</option>
@@ -72,13 +71,13 @@
     </div>
 </section>
 
-@functions {
+@code {
     private string Text { get; set; }
     private string HexCodePoint { get; set; }
     private string SelectedBlockName { get; set; }
     private UnicodeBrowser.Client.Models.BlockInformation[] Blocks { get; set; }
 
-    protected override async Task OnInitAsync()
+    protected override async Task OnInitializedAsync()
     {
         Blocks = await BlockRepository.GetBlocksAsync();
         SelectedBlockName = Blocks[0].Name;

@@ -1,6 +1,6 @@
-﻿@page "/search"
+@page "/search"
 @implements IDisposable
-@inject Microsoft.AspNetCore.Blazor.Services.IUriHelper UriHelper
+@inject Microsoft.AspNetCore.Components.IUriHelper UriHelper
 @inject SearchRepository SearchRepository
 
 <section>
@@ -45,14 +45,14 @@
     }
 </section>
 
-@functions {
+@code {
     private CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
 
     private string Query { get; set; }
 
     private UnicodeBrowser.Client.Models.CodePoint[] CodePoints { get; set; }
 
-    protected override async Task OnInitAsync()
+    protected override async Task OnInitializedAsync()
     {
         UriHelper.OnLocationChanged += OnLocationChanged;
 
@@ -74,9 +74,9 @@
         UriHelper.OnLocationChanged -= OnLocationChanged;
     }
 
-    private async void OnLocationChanged(object sender, string location)
+    private async void OnLocationChanged(object sender, LocationChangedEventArgs e)
     {
-        if (!RefreshParameters(location)) return;
+        if (!RefreshParameters(e.Location)) return;
 
         try
         {
@@ -107,18 +107,11 @@
         _cancellationTokenSource.Dispose();
         _cancellationTokenSource = new CancellationTokenSource();
 
-        if (!UriHelper.ToBaseRelativePath(UriHelper.GetBaseUriPrefix(), uri).StartsWith("/search", StringComparison.OrdinalIgnoreCase)) return false;
+        if (!UriHelper.ToBaseRelativePath(UriHelper.GetBaseUri(), uri).StartsWith("search", StringComparison.OrdinalIgnoreCase)) return false;
 
         CodePoints = null;
 
-        if (QueryHelpers.ParseQuery(new Uri(uri).Query).TryGetValue("q", out var text))
-        {
-            Query = text.ToString();
-        }
-        else
-        {
-            Query = string.Empty;
-        }
+        Query = new Uri(uri).GetQueryParameter("q");
 
         return true;
     }

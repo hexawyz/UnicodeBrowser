@@ -1,21 +1,23 @@
-﻿using Microsoft.AspNetCore.Blazor.Components;
-using Microsoft.AspNetCore.Blazor.RenderTree;
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.RenderTree;
 using System;
 using System.ComponentModel;
+using System.Threading.Tasks;
 
 namespace UnicodeBrowser.Client.Components
 {
-	public sealed class ApplicationBusyIndicator : BlazorComponent, IDisposable
+	public sealed class ApplicationBusyIndicator : ComponentBase, IDisposable
 	{
 		[Inject]
 		public ApplicationState ApplicationState { get; set; }
 
 		[Parameter]
-		internal string Class { get; set; }
+		public string Class { get; set; }
 		
-		protected override void OnInit()
+		protected override Task OnInitializedAsync()
 		{
 			ApplicationState.PropertyChanged += OnApplicationStatePropertyChanged;
+			return Task.CompletedTask;
 		}
 
 		public void Dispose()

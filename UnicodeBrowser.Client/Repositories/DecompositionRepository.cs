@@ -1,4 +1,3 @@
-﻿using Microsoft.AspNetCore.Blazor;
 using System.Net.Http;
 using System.Text;
 using System.Threading;
@@ -19,9 +18,8 @@ namespace UnicodeBrowser.Client.Repositories
 			BeginAsyncOperation();
 			try
 			{
-				var response = await HttpClient.PostAsync("/api/text/decompose", new StringContent(text, Encoding.UTF8));
-				cancellationToken.ThrowIfCancellationRequested();
-				return JsonUtil.Deserialize<CodePoint[]>(await response.Content.ReadAsStringAsync());
+				using var content = new StringContent(text, Encoding.UTF8);
+				return await HttpClient.GetItemsAsync<CodePoint>("/api/text/decompose", content, cancellationToken);
 			}
 			finally
 			{

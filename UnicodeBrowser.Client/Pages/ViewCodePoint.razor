@@ -1,4 +1,4 @@
-﻿@using UnicodeBrowser.Client.Models
+@using UnicodeBrowser.Client.Models
 @page "/codepoints/{hexCodePoint}"
 @inject CodePointRepository CodePointRepository
 
@@ -20,13 +20,13 @@
     }
 </section>
 
-@functions {
+@code {
     [Parameter]
-    private string HexCodePoint { get; set; }
+    public string HexCodePoint { get; set; }
 
     private CodePoint CodePoint { get; set; }
 
-    protected override async Task OnInitAsync()
+    protected override async Task OnInitializedAsync()
     {
         CodePoint = await CodePointRepository.GetCodePointAsync(int.Parse(HexCodePoint, NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture));
     }

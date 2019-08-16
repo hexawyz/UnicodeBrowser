@@ -1,8 +1,9 @@
-﻿using Microsoft.AspNetCore.Blazor;
 using System;
 using System.Linq;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Components;
 using UnicodeBrowser.Client.Models;
 
 namespace UnicodeBrowser.Client.Repositories
@@ -50,7 +51,7 @@ namespace UnicodeBrowser.Client.Repositories
 			BeginAsyncOperation();
 			try
 			{
-				return await HttpClient.GetJsonAsync<BlockInformation[]>("/api/blocks");
+				return await HttpClient.GetItemsAsync<BlockInformation>("/api/blocks", CancellationToken.None);
 			}
 			finally
 			{
@@ -62,8 +63,8 @@ namespace UnicodeBrowser.Client.Repositories
 		{
 			var task = _blockRetrievalTask;
 
-			return _blockRetrievalTask.Status == TaskStatus.RanToCompletion ?
-				Task.FromResult(GetBlockSync(_blockRetrievalTask.Result, blockName)) :
+			return task.Status == TaskStatus.RanToCompletion ?
+				Task.FromResult(GetBlockSync(task.Result, blockName)) :
 				GetBlockInternalAsync(blockName);
 		}
 

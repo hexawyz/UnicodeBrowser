@@ -1,4 +1,4 @@
-﻿@using System.Text
+@using System.Text
 @inject DecompositionRepository DecompositionRepository
 
 @if (CodePoints == null)
@@ -32,11 +32,11 @@ else
     </table>
 }
 
-@functions {
+@code {
     private string _text;
 
     [Parameter]
-    private string Text
+    public string Text
     {
         get => _text;
         set

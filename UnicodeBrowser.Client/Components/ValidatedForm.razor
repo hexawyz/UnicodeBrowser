@@ -1,0 +1,40 @@
+@inject IJSRuntime JsRuntime
+
+<form @ref="Form" @ref:suppressField class="@Class" @onsubmit="OnSubmitInternalAsync" novalidate @attributes="InputAttributes">
+	@ChildContent
+</form>
+
+@code {
+	private const string UnSubmittedFormClass = "needs-validation";
+	private const string SubmittedFormClass = "needs-validation was-validated";
+
+	private ElementReference Form;
+
+	private bool WasSubmitted { get; set; }
+
+	private string FinalClass
+		=> (string.IsNullOrEmpty(Class) ? "" : Class + " ") +
+			(WasSubmitted ? SubmittedFormClass : UnSubmittedFormClass);
+
+	[Parameter]
+	public string Class { get; set; }
+
+	[Parameter]
+	public RenderFragment ChildContent { get; set; }
+
+	[Parameter]
+	public Action OnSubmit { get; set; }
+
+	[Parameter(CaptureUnmatchedValues = true)]
+	public Dictionary<string, object> InputAttributes { get; set; }
+
+	private async Task OnSubmitInternalAsync()
+	{
+		WasSubmitted = true;
+
+		if (await JsRuntime.InvokeAsync<bool>("UnicodeBrowser.checkFormValidity", Form))
+		{
+			OnSubmit?.Invoke();
+		}
+	}
+}

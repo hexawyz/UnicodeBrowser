@@ -1,6 +1,8 @@
-﻿using Markdig.Syntax;
-using Microsoft.AspNetCore.Blazor.Components;
-using Microsoft.AspNetCore.Blazor.RenderTree;
+using System.Collections.Generic;
+using System.Linq;
+using Markdig.Syntax;
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.RenderTree;
 
 namespace UnicodeBrowser.Client.Components
 {
@@ -9,14 +11,14 @@ namespace UnicodeBrowser.Client.Components
 	/// This component will wrap the converted markdown inside a &lt;div&gt; tag with the <c>mardkown</c> class.
 	/// Other classes can be applied by using the class attribute on the component.
 	/// </remarks>
-	public sealed class MarkdownView : BlazorComponent
+	public sealed class MarkdownView : ComponentBase
     {
 		private MarkdownDocument _document;
 
 		private string _text;
 
 		[Parameter]
-		private string Text
+		public string Text
 		{
 			get => _text;
 			set
@@ -31,8 +33,8 @@ namespace UnicodeBrowser.Client.Components
 			}
 		}
 
-		[Parameter]
-		private string Class { get; set; }
+		[Parameter(CaptureUnmatchedValues = true)]
+		public Dictionary<string, object> InputAttributes { get; set; }
 
 		protected override void BuildRenderTree(RenderTreeBuilder builder)
 		{
@@ -41,11 +43,23 @@ namespace UnicodeBrowser.Client.Components
 			// the rendering will only ever occur when the document really has changed.
 			// This effectively makes displaying a markdown document cheap enough.
 
+			var inputAttributes = InputAttributes;
+
+			if (inputAttributes.TryGetValue("class", out object obj) && obj is string @class && @class.Length > 0)
+			{
+				@class += " markdown";
+			}
+			else
+			{
+				@class = "markdown";
+			}
+
 			builder.OpenElement(0, "div");
-			builder.AddAttribute(1, "class", !string.IsNullOrWhiteSpace(Class) ? Class + " markdown" : "markdown");
+			builder.AddAttribute(1, "class", @class);
+			builder.AddMultipleAttributes(2, InputAttributes.Where(kvp => !string.Equals(kvp.Key, "class", System.StringComparison.OrdinalIgnoreCase)));
 			if (_document != null)
 			{
-				builder.AddContent(2, b => new RenderFragmentMarkdownRenderer(b).Render(_document));
+				builder.AddContent(3, b => new RenderFragmentMarkdownRenderer(b).Render(_document));
 			}
 			builder.CloseElement();
 

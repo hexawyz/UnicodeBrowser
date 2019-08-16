@@ -1,4 +1,4 @@
-﻿@inject BlockCodePointRepository BlockCodePointRepository
+@inject BlockCodePointRepository BlockCodePointRepository
 
 @if (Block != null)
 {
@@ -72,15 +72,15 @@
     }
     else if (LastRow > FirstRow && HasRemainingCodePoints)
     {
-        <button type="button" class="btn btn-info" onclick="@FetchNextCodePoints">Show more code points…</button>
+        <button type="button" class="btn btn-info" @onclick="FetchNextCodePoints">Show more code points…</button>
     }
 }
 
-@functions {
+@code {
     private UnicodeBrowser.Client.Models.BlockInformation _block;
 
     [Parameter]
-    private UnicodeBrowser.Client.Models.BlockInformation Block
+    public UnicodeBrowser.Client.Models.BlockInformation Block
     {
         get => _block;
         set

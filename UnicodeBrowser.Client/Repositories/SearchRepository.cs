@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Blazor;
+using Microsoft.AspNetCore.Blazor;
+using Microsoft.AspNetCore.Components;
 using System;
 using System.Net.Http;
 using System.Threading;
@@ -19,9 +20,7 @@ namespace UnicodeBrowser.Client.Repositories
 			BeginAsyncOperation();
 			try
 			{
-				var codePoints = await HttpClient.GetJsonAsync<CodePoint[]>("/api/search?q=" + Uri.EscapeDataString(query) + "&limit=100");
-				cancellationToken.ThrowIfCancellationRequested();
-				return codePoints;
+				return await HttpClient.GetItemsAsync<CodePoint>("/api/search?q=" + Uri.EscapeDataString(query) + "&limit=100", cancellationToken);
 			}
 			finally
 			{

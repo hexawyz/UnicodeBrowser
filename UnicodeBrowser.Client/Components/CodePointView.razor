@@ -1,4 +1,4 @@
-﻿<div class="code-point-info">
+<div class="code-point-info">
     <div class="display-text-container"><div class="display-text">@CodePoint.DisplayText</div></div>
     <dl class="row">
         <dt class="col-3">Code point</dt>
@@ -107,7 +107,7 @@
     </dl>
 </div>
 
-@functions {
+@code {
     [Parameter]
-    private UnicodeBrowser.Client.Models.CodePoint CodePoint { get; set; }
+    public UnicodeBrowser.Client.Models.CodePoint CodePoint { get; set; }
 }
