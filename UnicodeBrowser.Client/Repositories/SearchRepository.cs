@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Blazor;
-using Microsoft.AspNetCore.Components;
 using System;
 using System.Net.Http;
 using System.Threading;

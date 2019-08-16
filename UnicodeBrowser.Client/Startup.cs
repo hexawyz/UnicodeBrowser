@@ -9,16 +9,15 @@ namespace UnicodeBrowser.Client
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<ApplicationState>();
+            services.AddSingleton<UnicodeVersionRepository>();
             services.AddSingleton<BlockRepository>();
-            services.AddSingleton<BlockCodePointRepository>();
+			services.AddSingleton<BlockCodePointRepository>();
             services.AddSingleton<CodePointRepository>();
             services.AddSingleton<DecompositionRepository>();
             services.AddSingleton<SearchRepository>();
         }
 
-        public void Configure(IComponentsApplicationBuilder app)
-        {
-            app.AddComponent<App>("app");
-        }
-    }
+		public void Configure(IComponentsApplicationBuilder app)
+			=> app.AddComponent<App>("app");
+	}
 }

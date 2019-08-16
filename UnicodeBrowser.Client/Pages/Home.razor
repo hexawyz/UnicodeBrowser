@@ -5,99 +5,99 @@
 @inject BlockRepository BlockRepository
 
 <section>
-    <h1>Home</h1>
+	<h1>Home</h1>
 
-    <div class="card mb-3">
-        <div class="card-header">Decompose text</div>
-        <div class="card-body">
-            <ValidatedForm OnSubmit="@DecomposeText">
-                <div class="form-group">
-                    <label for="textToDecomposeTextBox">Text to analyze</label>
-                    <div class="input-group">
-                        <input id="textToDecomposeTextBox" type="text" class="form-control" @bind="Text" placeholder="Type or paste the text to analyze…" required />
-                        <div class="invalid-feedback order-1">
-                            Please enter some text.
-                        </div>
-                        <span class="input-group-append"><button type="submit" class="btn btn-primary"><i class="fas fa-cogs"></i><p class="sr-only">Decompose</p></button></span>
-                    </div>
-                </div>
-            </ValidatedForm>
-        </div>
-    </div>
+	<div class="card mb-3">
+		<div class="card-header">Decompose text</div>
+		<div class="card-body">
+			<ValidatedForm OnSubmit="@DecomposeText">
+				<div class="form-group">
+					<label for="textToDecomposeTextBox">Text to analyze</label>
+					<div class="input-group">
+						<input id="textToDecomposeTextBox" type="text" class="form-control" @bind="Text" placeholder="Type or paste the text to analyze…" required />
+						<div class="invalid-feedback order-1">
+							Please enter some text.
+						</div>
+						<span class="input-group-append"><button type="submit" class="btn btn-primary"><i class="fas fa-cogs"></i><p class="sr-only">Decompose</p></button></span>
+					</div>
+				</div>
+			</ValidatedForm>
+		</div>
+	</div>
 
-    <div class="card mb-3">
-        <div class="card-header">Find code point</div>
-        <div class="card-body">
-            <ValidatedForm OnSubmit="@GoToCodePoint">
-                <div class="form-group">
-                    <label for="hexCodePointTextBox">Code point</label>
-                    <div class="input-group">
-                        <input id="hexCodePointTextBox" type="text" class="form-control" @bind="HexCodePoint" placeholder="Type an hexadecimal code point number…" required maxlength="6" pattern="[0-9a-fA-F]{1,6}" />
-                        <div class="invalid-feedback order-1">
-                            Please enter a valid hexadecimal number.
-                        </div>
-                        <span class="input-group-append"><button type="submit" class="btn btn-success"><i class="fas fa-search"></i><p class="sr-only">Lookup</p></button></span>
-                    </div>
-                </div>
-            </ValidatedForm>
-        </div>
-    </div>
+	<div class="card mb-3">
+		<div class="card-header">Find code point</div>
+		<div class="card-body">
+			<ValidatedForm OnSubmit="@GoToCodePoint">
+				<div class="form-group">
+					<label for="hexCodePointTextBox">Code point</label>
+					<div class="input-group">
+						<input id="hexCodePointTextBox" type="text" class="form-control" @bind="HexCodePoint" placeholder="Type an hexadecimal code point number…" required maxlength="6" pattern="[0-9a-fA-F]{1,6}" />
+						<div class="invalid-feedback order-1">
+							Please enter a valid hexadecimal number.
+						</div>
+						<span class="input-group-append"><button type="submit" class="btn btn-success"><i class="fas fa-search"></i><p class="sr-only">Lookup</p></button></span>
+					</div>
+				</div>
+			</ValidatedForm>
+		</div>
+	</div>
 
-    <div class="card mb-3">
-        <div class="card-header">Browse blocks</div>
-        <div class="card-body">
-            @if (Blocks == null)
-            {
-                <div class="spinner"><i class="fas fa-2x fa-spinner fa-pulse"></i></div>
-            }
-            else
-            {
-                <ValidatedForm OnSubmit="@BrowseBlock">
-                    <div class="form-group">
-                        <label for="blockComboBox">Unicode block</label>
-                        <div class="input-group">
-                            <select id="blockComboBox" class="form-control" @bind="SelectedBlockName">
-                                @foreach (var block in Blocks)
-                                {
-                                    <option value="@block.Name">@block.Name</option>
-                                }
-                            </select>
-                            <span class="input-group-append"><button type="submit" class="btn btn-success"><i class="fas fa-arrow-right"></i><p class="sr-only">Go</p></button></span>
-                        </div>
-                    </div>
-                </ValidatedForm>
-            }
-        </div>
-    </div>
+	<div class="card mb-3">
+		<div class="card-header">Browse blocks</div>
+		<div class="card-body">
+			@if (Blocks == null)
+			{
+				<div class="spinner"><i class="fas fa-2x fa-spinner fa-pulse"></i></div>
+			}
+			else
+			{
+				<ValidatedForm OnSubmit="@BrowseBlock">
+					<div class="form-group">
+						<label for="blockComboBox">Unicode block</label>
+						<div class="input-group">
+							<select id="blockComboBox" class="form-control" @bind="SelectedBlockName">
+								@foreach (var block in Blocks)
+								{
+									<option value="@block.Name">@block.Name</option>
+								}
+							</select>
+							<span class="input-group-append"><button type="submit" class="btn btn-success"><i class="fas fa-arrow-right"></i><p class="sr-only">Go</p></button></span>
+						</div>
+					</div>
+				</ValidatedForm>
+			}
+		</div>
+	</div>
 </section>
 
 @code {
-    private string Text { get; set; }
-    private string HexCodePoint { get; set; }
-    private string SelectedBlockName { get; set; }
-    private UnicodeBrowser.Client.Models.BlockInformation[] Blocks { get; set; }
+	private string Text { get; set; }
+	private string HexCodePoint { get; set; }
+	private string SelectedBlockName { get; set; }
+	private UnicodeBrowser.Client.Models.BlockInformation[] Blocks { get; set; }
 
-    protected override async Task OnInitializedAsync()
-    {
-        Blocks = await BlockRepository.GetBlocksAsync();
-        SelectedBlockName = Blocks[0].Name;
-    }
+	protected override async Task OnInitializedAsync()
+	{
+		Blocks = await BlockRepository.GetBlocksAsync();
+		SelectedBlockName = Blocks[0].Name;
+	}
 
-    public void DecomposeText()
-    {
-        UriHelper.NavigateTo("/decomposition?text=" + Uri.EscapeDataString(Text));
-    }
+	public void DecomposeText()
+	{
+		UriHelper.NavigateTo("/decomposition?text=" + Uri.EscapeDataString(Text));
+	}
 
-    public void GoToCodePoint()
-    {
-        if (int.TryParse(HexCodePoint, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out int codePoint))
-        {
-            UriHelper.NavigateTo("/codepoints/" + Uri.EscapeDataString(codePoint.ToHexadecimal()));
-        }
-    }
+	public void GoToCodePoint()
+	{
+		if (int.TryParse(HexCodePoint, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out int codePoint))
+		{
+			UriHelper.NavigateTo("/codepoints/" + Uri.EscapeDataString(codePoint.ToHexadecimal()));
+		}
+	}
 
-    public void BrowseBlock()
-    {
-        UriHelper.NavigateTo("/blocks/" + Uri.EscapeDataString(SelectedBlockName));
-    }
+	public void BrowseBlock()
+	{
+		UriHelper.NavigateTo("/blocks/" + Uri.EscapeDataString(SelectedBlockName));
+	}
 }
