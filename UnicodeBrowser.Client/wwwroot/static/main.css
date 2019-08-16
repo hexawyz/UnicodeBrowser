@@ -1,4 +1,4 @@
-﻿@import url("fonts.css");
+@import url("fonts.css");
 
 .splash {
     text-align: center;
@@ -39,24 +39,7 @@ div.display-text, td.display-text {
     display: table-cell;
     text-align: center;
     vertical-align: middle;
-    font-family: "AppleColorEmoji",
-        "Segoe UI",
-        "Segoe UI Emoji",
-        "Microsoft YaHei UI",
-        "Meiryo UI",
-        "Malgun Gothic",
-        "Leelawadee UI",
-        "Segoe UI Historic",
-        "Segoe UI Symbol",
-        Tahoma,
-        Geneva,
-        Verdana,
-        "Arial Unicode MS",
-        "BabelStone Runic",
-        "BabelStone Zanabazar",
-        "BabelStone Marchen",
-        "Tangut Yinchuan",
-        sans-serif;
+    font-family: "AppleColorEmoji", "Segoe UI", "Segoe UI Emoji", "Microsoft YaHei UI", "Meiryo UI", "Malgun Gothic", "Leelawadee UI", "Segoe UI Historic", "Segoe UI Symbol", Tahoma, Geneva, Verdana, "Arial Unicode MS", "BabelStone Runic", "BabelStone Zanabazar", "BabelStone Marchen", "Tangut Yinchuan", sans-serif;
     font-size: 1rem;
 }
 
@@ -128,13 +111,18 @@ table.decomposition-table > tbody > tr > td {
             height: 2rem;
         }
 
-div.row.content-with-sidebar {
+div.content-with-sidebar {
     position: fixed;
-    top: 4rem;
-    bottom: 1rem;
+    top: 3.5rem;
+    bottom: 0;
     width: 100%;
     z-index: 999;
 }
+
+    div.content-with-sidebar > .row {
+        width: 100%;
+        height: 100%;
+    }
 
 .sidebar {
     height: 100%;
@@ -142,10 +130,27 @@ div.row.content-with-sidebar {
     overflow-y: auto;
 }
 
+    .sidebar > header {
+        position: sticky;
+        top: 0;
+        padding-top: 0.5rem;
+        padding-bottom: 0.5rem;
+        width: 100%;
+    }
+
+        .sidebar > header + .nav {
+            margin-bottom: 1rem;
+        }
+
     .sidebar + .scrollable-content {
         height: 100%;
         overflow: auto;
     }
+
+        .sidebar + .scrollable-content > .content-wrapper {
+            margin-top: 0.5rem;
+            margin-bottom: 1rem;
+        }
 
 div.spinner {
     padding: 1rem 0;

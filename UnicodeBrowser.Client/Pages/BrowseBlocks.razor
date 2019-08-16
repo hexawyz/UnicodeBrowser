@@ -3,61 +3,81 @@
 @inject BlockRepository BlockRepository
 
 <section>
-    @if (Blocks == null)
-    {
-        <div class="spinner"><i class="fas fa-2x fa-spinner fa-pulse"></i></div>
-    }
-    else
-    {
-        <div class="row content-with-sidebar">
-            <div class="col-3 sidebar">
-                <h3>Blocks</h3>
-                <ul class="nav flex-column nav-pills">
-                    @foreach (var block in Blocks)
-                    {
-                        <li class="nav-item">
-                            <a class="nav-link@(string.Equals(block.Name, BlockName, StringComparison.OrdinalIgnoreCase) ? " active" : string.Empty)" href="/blocks/@Uri.EscapeDataString(block.Name)">@block.Name</a>
-                        </li>
-                    }
-                </ul>
-            </div>
-            <div class="col-9 scrollable-content">
-                @if (BlockName != null)
-                {
-                    <UnicodeBlockView Block="@SelectedBlock"></UnicodeBlockView>
-                }
-            </div>
-        </div>
-    }
+	<div class="content-with-sidebar">
+		<div class="row">
+			<nav class="col-3 sidebar bg-light">
+				<header class="bg-light">
+					<h3>Blocks</h3>
+					<form>
+						<input id="blockNameFilter" class="form-control" @bind="_filter" @bind:event="oninput" placeholder="Filter…" />
+					</form>
+				</header>
+				@if (Blocks == null)
+				{
+					<div class="spinner"><i class="fas fa-2x fa-spinner fa-pulse"></i></div>
+				}
+				else
+				{
+					bool hasNonFilteredBlocks = false;
+					<ul class="nav flex-column nav-pills">
+						@foreach (var block in Blocks)
+						{
+							if (string.IsNullOrEmpty(_filter) || block.Name.IndexOf(_filter, StringComparison.OrdinalIgnoreCase) >= 0)
+							{
+								<li class="nav-item" @key="block.Name">
+									<a class="nav-link@(string.Equals(block.Name, BlockName, StringComparison.OrdinalIgnoreCase) ? " active" : string.Empty)" href="/blocks/@Uri.EscapeDataString(block.Name)">@block.Name</a>
+								</li>
+								hasNonFilteredBlocks = true;
+							}
+						}
+					</ul>
+					if (!hasNonFilteredBlocks)
+					{
+						<div>No matches.</div>
+					}
+				}
+			</nav>
+			<div class="col-9 scrollable-content">
+				<div class="content-wrapper">
+					@if (BlockName != null)
+					{
+						<UnicodeBlockView Block="@SelectedBlock"></UnicodeBlockView>
+					}
+				</div>
+			</div>
+		</div>
+	</div>
 </section>
 
 @code {
-    private UnicodeBrowser.Client.Models.BlockInformation[] Blocks { get; set; }
+	private UnicodeBrowser.Client.Models.BlockInformation[] Blocks { get; set; }
 
-    private string _blockName;
+	private string _filter;
 
-    [Parameter]
-    public string BlockName
-    {
-        get => _blockName;
-        set
-        {
-            _blockName = value;
-            MapSelectedBlock();
-        }
-    }
+	private string _blockName;
 
-    private UnicodeBrowser.Client.Models.BlockInformation SelectedBlock { get; set; }
+	[Parameter]
+	public string BlockName
+	{
+		get => _blockName;
+		set
+		{
+			_blockName = value;
+			MapSelectedBlock();
+		}
+	}
 
-    protected override async Task OnInitializedAsync()
-    {
-        Blocks = await BlockRepository.GetBlocksAsync();
-        MapSelectedBlock();
-    }
+	private UnicodeBrowser.Client.Models.BlockInformation SelectedBlock { get; set; }
 
-    private void MapSelectedBlock()
-    {
-        SelectedBlock = Blocks?.FirstOrDefault(block => block.Name == BlockName);
-        StateHasChanged();
-    }
+	protected override async Task OnInitializedAsync()
+	{
+		Blocks = await BlockRepository.GetBlocksAsync();
+		MapSelectedBlock();
+	}
+
+	private void MapSelectedBlock()
+	{
+		SelectedBlock = Blocks?.FirstOrDefault(block => block.Name == BlockName);
+		StateHasChanged();
+	}
 }
