@@ -1,6 +1,6 @@
 using System.Collections.Concurrent;
 using System.Net.Http;
-using UnicodeBrowser.Client.Models;
+using UnicodeBrowser.Models;
 
 namespace UnicodeBrowser.Client.Repositories
 {

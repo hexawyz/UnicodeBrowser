@@ -2,7 +2,7 @@ using System;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using UnicodeBrowser.Client.Models;
+using UnicodeBrowser.Models;
 
 namespace UnicodeBrowser.Client.Repositories
 {

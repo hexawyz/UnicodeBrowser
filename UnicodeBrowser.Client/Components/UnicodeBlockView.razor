@@ -48,7 +48,7 @@
                                 <td>@(((firstRow + i) << 4).ToHexadecimal())</td>
                                 @for (int j = 0; j <= 0xF; j++, codePointIndex++)
                                 {
-                                    if (codePointIndex >= 0 && codePointIndex < codePoints.Length && codePoints[codePointIndex] is UnicodeBrowser.Client.Models.CodePoint codePoint)
+                                    if (codePointIndex >= 0 && codePointIndex < codePoints.Length && codePoints[codePointIndex] is UnicodeBrowser.Models.CodePoint codePoint)
                                     {
                                         <td class="display-text" title="@codePoint.Index.ToCodePointRepresentation() - @codePoint.GetDisplayName()">
                                             <a href="/codepoints/@codePoint.Index.ToHexadecimal()">@codePoint.DisplayText</a>
@@ -77,10 +77,10 @@
 }
 
 @code {
-    private UnicodeBrowser.Client.Models.BlockInformation _block;
+    private UnicodeBrowser.Models.BlockInformation _block;
 
     [Parameter]
-    public UnicodeBrowser.Client.Models.BlockInformation Block
+    public UnicodeBrowser.Models.BlockInformation Block
     {
         get => _block;
         set
@@ -106,7 +106,7 @@
 
     private CancellationTokenSource _cancellationTokenSource;
 
-    private void FetchFirstCodePoints(UnicodeBrowser.Client.Models.BlockInformation block)
+    private void FetchFirstCodePoints(UnicodeBrowser.Models.BlockInformation block)
     {
         if (_cancellationTokenSource != null)
         {

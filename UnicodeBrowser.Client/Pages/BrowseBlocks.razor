@@ -50,7 +50,7 @@
 </section>
 
 @code {
-	private UnicodeBrowser.Client.Models.BlockInformation[] Blocks { get; set; }
+	private UnicodeBrowser.Models.BlockInformation[] Blocks { get; set; }
 
 	private string _filter;
 
@@ -67,7 +67,7 @@
 		}
 	}
 
-	private UnicodeBrowser.Client.Models.BlockInformation SelectedBlock { get; set; }
+	private UnicodeBrowser.Models.BlockInformation SelectedBlock { get; set; }
 
 	protected override async Task OnInitializedAsync()
 	{

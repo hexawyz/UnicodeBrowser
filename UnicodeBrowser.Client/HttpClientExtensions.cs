@@ -3,8 +3,10 @@ using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
+using UnicodeBrowser.Json;
 
 namespace UnicodeBrowser.Client
 {
@@ -12,8 +14,15 @@ namespace UnicodeBrowser.Client
 	{
 		internal static readonly JsonSerializerOptions JsonSerializerOptions = new JsonSerializerOptions
 		{
+			PropertyNameCaseInsensitive = true,
 			PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-			PropertyNameCaseInsensitive = true
+			IgnoreNullValues = true,
+			IgnoreReadOnlyProperties = false,
+			Converters =
+			{
+				ImmutableJsonConverter.Instance,
+				new JsonStringEnumConverter(),
+			}
 		};
 
 		private const string ApplicationJsonMediaType = "application/json";
@@ -57,13 +66,16 @@ namespace UnicodeBrowser.Client
 			return (itemCount, JsonSerializer.Deserialize<T[]>(await response.Content.ReadAsByteArrayAsync().ConfigureAwait(false), JsonSerializerOptions));
 		}
 
+		public static Task<T> GetItemAsync<T>(this HttpClient httpClient, string uri, CancellationToken cancellationToken)
+			=> httpClient.GetObjectAsync<T>(HttpMethod.Get, uri, null, cancellationToken);
+
 		public static Task<T[]> GetItemsAsync<T>(this HttpClient httpClient, string uri, CancellationToken cancellationToken)
-			=> httpClient.GetItemsAsync<T>(HttpMethod.Get, uri, null, cancellationToken);
+			=> httpClient.GetObjectAsync<T[]>(HttpMethod.Get, uri, null, cancellationToken);
 
 		public static Task<T[]> GetItemsAsync<T>(this HttpClient httpClient, string uri, HttpContent content, CancellationToken cancellationToken)
-			=> httpClient.GetItemsAsync<T>(HttpMethod.Post, uri, content, cancellationToken);
+			=> httpClient.GetObjectAsync<T[]>(HttpMethod.Post, uri, content, cancellationToken);
 
-		private static async Task<T[]> GetItemsAsync<T>(this HttpClient httpClient, HttpMethod method, string uri, HttpContent content, CancellationToken cancellationToken)
+		private static async Task<T> GetObjectAsync<T>(this HttpClient httpClient, HttpMethod method, string uri, HttpContent content, CancellationToken cancellationToken)
 		{
 			using var response = await httpClient.SendAsync
 			(
@@ -96,7 +108,7 @@ namespace UnicodeBrowser.Client
 				throw new InvalidDataException("The server responded with an unexpected Content-Type");
 			}
 
-			return JsonSerializer.Deserialize<T[]>(await response.Content.ReadAsByteArrayAsync().ConfigureAwait(false), JsonSerializerOptions);
+			return JsonSerializer.Deserialize<T>(await response.Content.ReadAsByteArrayAsync().ConfigureAwait(false), JsonSerializerOptions);
 		}
 	}
 }

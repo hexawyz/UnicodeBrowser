@@ -1,8 +1,8 @@
 using System.Linq;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Components;
-using UnicodeBrowser.Client.Models;
+using UnicodeBrowser.Models;
 
 namespace UnicodeBrowser.Client.Repositories
 {
@@ -37,7 +37,7 @@ namespace UnicodeBrowser.Client.Repositories
 			BeginAsyncOperation();
 			try
 			{
-				return await HttpClient.GetJsonAsync<CodePoint>("/api/codepoints/" + codePoint.ToHexadecimal()).ConfigureAwait(false);
+				return await HttpClient.GetItemAsync<CodePoint>("/api/codepoints/" + codePoint.ToHexadecimal(), CancellationToken.None).ConfigureAwait(false);
 			}
 			finally
 			{

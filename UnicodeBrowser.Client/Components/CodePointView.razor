@@ -41,12 +41,12 @@
         <dt class="col-3">Block</dt>
         <dd class="col-9"><a href="/blocks/@Uri.EscapeDataString(CodePoint.Block)">@CodePoint.Block</a></dd>
 
-        @if (!string.IsNullOrEmpty(CodePoint.NumericType))
+        @if (!string.IsNullOrEmpty(CodePoint.NumericType.ToString()))
         {
             <dt class="col-3">Numeric Type</dt>
             <dd class="col-9">
                 @CodePoint.NumericType
-                @if (!string.IsNullOrEmpty(CodePoint.UnihanNumericType))
+                @if (!string.IsNullOrEmpty(CodePoint.UnihanNumericType.ToString()))
                 {
                     <text>(<span class="unihanNumericType">@CodePoint.UnihanNumericType</span>)</text>
                 }
@@ -109,5 +109,5 @@
 
 @code {
     [Parameter]
-    public UnicodeBrowser.Client.Models.CodePoint CodePoint { get; set; }
+    public UnicodeBrowser.Models.CodePoint CodePoint { get; set; }
 }
