@@ -1,7 +1,7 @@
 @page "/"
 @page "/home"
 @using System.Globalization
-@inject Microsoft.AspNetCore.Components.IUriHelper UriHelper
+@inject NavigationManager NavigationManager
 @inject BlockRepository BlockRepository
 
 <section>
@@ -85,19 +85,19 @@
 
 	public void DecomposeText()
 	{
-		UriHelper.NavigateTo("/decomposition?text=" + Uri.EscapeDataString(Text));
+		NavigationManager.NavigateTo("/decomposition?text=" + Uri.EscapeDataString(Text));
 	}
 
 	public void GoToCodePoint()
 	{
 		if (int.TryParse(HexCodePoint, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out int codePoint))
 		{
-			UriHelper.NavigateTo("/codepoints/" + Uri.EscapeDataString(codePoint.ToHexadecimal()));
+			NavigationManager.NavigateTo("/codepoints/" + Uri.EscapeDataString(codePoint.ToHexadecimal()));
 		}
 	}
 
 	public void BrowseBlock()
 	{
-		UriHelper.NavigateTo("/blocks/" + Uri.EscapeDataString(SelectedBlockName));
+		NavigationManager.NavigateTo("/blocks/" + Uri.EscapeDataString(SelectedBlockName));
 	}
 }

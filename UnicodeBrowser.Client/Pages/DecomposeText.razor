@@ -1,6 +1,6 @@
 @page "/decomposition"
 @implements IDisposable
-@inject Microsoft.AspNetCore.Components.IUriHelper UriHelper
+@inject NavigationManager NavigationManager
 @inject ApplicationState ApplicationState
 
 <section>
@@ -39,14 +39,14 @@
 
 	protected override Task OnInitializedAsync()
 	{
-		RefreshParameters(UriHelper.GetAbsoluteUri());
-		UriHelper.OnLocationChanged += OnLocationChanged;
+		RefreshParameters(NavigationManager.Uri);
+		NavigationManager.LocationChanged += OnLocationChanged;
 		return Task.CompletedTask;
 	}
 
 	public void Dispose()
 	{
-		UriHelper.OnLocationChanged -= OnLocationChanged;
+		NavigationManager.LocationChanged -= OnLocationChanged;
 	}
 
 	private void OnLocationChanged(object sender, LocationChangedEventArgs e)
@@ -64,6 +64,6 @@
 	{
 		// As of today, this won't reload the component, which is exactly what I wanted (yeah !)
 		// Instead, this will simply trigger the LocationChanged event, allowing us to update the page.
-		UriHelper.NavigateTo("/decomposition?text=" + Uri.EscapeDataString(Text));
+		NavigationManager.NavigateTo("/decomposition?text=" + Uri.EscapeDataString(Text));
 	}
 }

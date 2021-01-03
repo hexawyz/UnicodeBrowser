@@ -1,24 +1,25 @@
 <Project>
 	<PropertyGroup>
-		<AspNetCoreVersion>3.0.0-preview8.19405.7</AspNetCoreVersion>
+		<AspNetCoreVersion>5.0.1</AspNetCoreVersion>
 	</PropertyGroup>
 	<ItemGroup>
-		<PackageReference Update="Markdig" Version="0.17.1" />
-		<PackageReference Update="Microsoft.AspNetCore.Blazor" Version="$(AspNetCoreVersion)" />
-		<PackageReference Update="Microsoft.AspNetCore.Blazor.Build" Version="$(AspNetCoreVersion)" />
-		<PackageReference Update="Microsoft.AspNetCore.Blazor.HttpClient" Version="$(AspNetCoreVersion)" />
-		<PackageReference Update="Microsoft.AspNetCore.Blazor.DevServer" Version="$(AspNetCoreVersion)" />
-		<PackageReference Update="Microsoft.AspNetCore.Blazor.Server" Version="$(AspNetCoreVersion)" />
+		<PackageReference Update="Markdig" Version="0.22.1" />
+		<PackageReference Update="Microsoft.AspNetCore.Components.WebAssembly" Version="$(AspNetCoreVersion)" />
+		<PackageReference Update="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="$(AspNetCoreVersion)" />
+		<PackageReference Update="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="$(AspNetCoreVersion)" />
 		<PackageReference Update="Newtonsoft.Json" Version="12.0.2" />
-		<PackageReference Update="Serilog" Version="2.9.0-dev-01119" />
-		<PackageReference Update="Serilog.AspNetCore" Version="3.0.0-dev-00059" />
+		<PackageReference Update="Serilog" Version="2.10.0" />
+		<PackageReference Update="Serilog.AspNetCore" Version="3.4.0" />
 		<PackageReference Update="Serilog.Sinks.Async" Version="1.4.0" />
-		<PackageReference Update="Serilog.Sinks.Console" Version="3.1.2-dev-00811" />
-		<PackageReference Update="System.Memory" Version="4.5.3" />
-		<PackageReference Update="System.Reflection.Emit" Version="4.3.0" />
-		<PackageReference Update="System.Text.Json" Version="4.6.0-preview8.19405.3" />
-		<PackageReference Update="UnicodeInformation" Version="2.4.0" />
+		<PackageReference Update="Serilog.Sinks.Console" Version="3.1.1" />
+		<PackageReference Include="System.Collections" Version="4.3.0" />
+		<PackageReference Update="System.Memory" Version="4.5.4" />
+		<PackageReference Update="System.Net.Http.Json" Version="5.0.0" />
+		<PackageReference Update="System.Reflection.Emit" Version="4.7.0" />
+		<PackageReference Update="System.Runtime.Extensions" Version="4.3.1" />
+		<PackageReference Update="System.Text.Json" Version="5.0.0" />
+		<PackageReference Update="UnicodeInformation" Version="2.5.0" />
 		<PackageReference Update="xunit" Version="2.4.1" />
-		<PackageReference Update="xunit.runner.visualstudio" Version="2.4.1" />
+		<PackageReference Update="xunit.runner.visualstudio" Version="2.4.3" />
 	</ItemGroup>
 </Project>

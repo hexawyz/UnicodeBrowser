@@ -1,17 +1,14 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
 
 	<PropertyGroup>
-		<TargetFramework>netstandard2.0</TargetFramework>
-		<OutputType>Exe</OutputType>
-		<RazorLangVersion>3.0</RazorLangVersion>
+		<TargetFramework>net5.0</TargetFramework>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Markdig" />
-		<PackageReference Include="Microsoft.AspNetCore.Blazor" />
-		<PackageReference Include="Microsoft.AspNetCore.Blazor.Build" PrivateAssets="all" />
-		<PackageReference Include="Microsoft.AspNetCore.Blazor.HttpClient" />
-		<PackageReference Include="Microsoft.AspNetCore.Blazor.DevServer" PrivateAssets="all" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" PrivateAssets="all" />
+		<PackageReference Include="System.Net.Http.Json" />
 		<PackageReference Include="System.Memory" />
 	</ItemGroup>
 

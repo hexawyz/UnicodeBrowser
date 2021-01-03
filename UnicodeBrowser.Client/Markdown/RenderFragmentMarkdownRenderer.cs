@@ -1,11 +1,11 @@
-﻿using Markdig.Renderers;
-using Markdig.Renderers.Html;
-using Markdig.Syntax;
-using Markdig.Syntax.Inlines;
-using Microsoft.AspNetCore.Components.RenderTree;
 using System;
 using System.Globalization;
 using System.Text;
+using Markdig.Renderers;
+using Markdig.Renderers.Html;
+using Markdig.Syntax;
+using Markdig.Syntax.Inlines;
+using Microsoft.AspNetCore.Components.Rendering;
 
 namespace UnicodeBrowser.Client
 {
@@ -169,7 +169,7 @@ namespace UnicodeBrowser.Client
 
 	internal sealed class HeadingBlockRenderer : RenderFragmentMarkdownObjectRenderer<HeadingBlock>
 	{
-		private static string[] KnownHeadingTags = { "h1", "h2", "h3", "h4", "h5", "h6" };
+		private static readonly string[] KnownHeadingTags = { "h1", "h2", "h3", "h4", "h5", "h6" };
 
 		protected override void Write(RenderFragmentMarkdownRenderer renderer, HeadingBlock obj)
 			=> renderer.WriteElementStart(obj.Level > 0 && obj.Level <= 6 ? KnownHeadingTags[obj.Level - 1] : "h" + obj.Level.ToString(CultureInfo.InvariantCulture))

@@ -93,18 +93,18 @@ namespace UnicodeBrowser.Server
 			 if (env.IsDevelopment())
 			{
 				app.UseDeveloperExceptionPage();
-				app.UseBlazorDebugging();
+				app.UseWebAssemblyDebugging();
 			}
 
 			app.UseStaticFiles();
-			app.UseClientSideBlazorFiles<Client.Startup>();
+			app.UseBlazorFrameworkFiles();
 
 			app.UseRouting();
 
 			app.UseEndpoints(endpoints =>
 			{
 				endpoints.MapDefaultControllerRoute();
-				endpoints.MapFallbackToClientSideBlazor<Client.Startup>("index.html");
+				endpoints.MapFallbackToFile("index.html");
 			});
 		}
 	}

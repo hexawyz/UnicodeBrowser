@@ -1,4 +1,4 @@
-@inject Microsoft.AspNetCore.Components.IUriHelper UriHelper
+@inject NavigationManager NavigationManager
 @inject UnicodeVersionRepository UnicodeVersionRepository
 
 <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-primary">
@@ -55,7 +55,7 @@
 	{
 		if (!string.IsNullOrEmpty(CharacterSearchText))
 		{
-			UriHelper.NavigateTo("/search?q=" + Uri.EscapeDataString(CharacterSearchText));
+			NavigationManager.NavigateTo("/search?q=" + Uri.EscapeDataString(CharacterSearchText));
 		}
 	}
 }

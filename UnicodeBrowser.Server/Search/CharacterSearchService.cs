@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -46,10 +46,10 @@ namespace UnicodeBrowser.Search
             }
         }
 
-        private static int[] EmptyInt32Array = new int[0];
+        private static readonly int[] EmptyInt32Array = new int[0];
 
-        private static readonly char[] wordSeparators = new[] { ' ', '-' };
-        private static readonly char[] simplifiedWordSeparators = new[] { ' ' };
+        private static readonly char[] WordSeparators = new[] { ' ', '-' };
+        private static readonly char[] SimplifiedWordSeparators = new[] { ' ' };
 
         private readonly Task _initializationTask;
         private Node _wordIndex;
@@ -70,7 +70,7 @@ namespace UnicodeBrowser.Search
 
                 if (!string.IsNullOrEmpty(name))
                 {
-                    foreach (string word in name.Split(i == 0x1180 ? simplifiedWordSeparators : wordSeparators))
+                    foreach (string word in name.Split(i == 0x1180 ? SimplifiedWordSeparators : WordSeparators))
                     {
                         builder.AddWord(word, i);
                     }
@@ -78,7 +78,7 @@ namespace UnicodeBrowser.Search
 
                 if (!string.IsNullOrEmpty(charInfo.OldName))
                 {
-                    foreach (string word in RemoveForbiddenCharacters(charInfo.OldName).Split(wordSeparators))
+                    foreach (string word in RemoveForbiddenCharacters(charInfo.OldName).Split(WordSeparators))
                     {
                         builder.AddWord(word, i);
                     }
@@ -88,7 +88,7 @@ namespace UnicodeBrowser.Search
                 {
                     foreach (var nameAlias in charInfo.NameAliases)
                     {
-                        foreach (string word in nameAlias.Name.Split(wordSeparators))
+                        foreach (string word in nameAlias.Name.Split(WordSeparators))
                         {
                             builder.AddWord(word, i);
                         }

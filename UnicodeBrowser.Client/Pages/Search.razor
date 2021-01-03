@@ -1,118 +1,118 @@
 @page "/search"
 @implements IDisposable
-@inject Microsoft.AspNetCore.Components.IUriHelper UriHelper
+@inject NavigationManager NavigationManager
 @inject SearchRepository SearchRepository
 
 <section>
-    <h1>Search Results</h1>
+	<h1>Search Results</h1>
 
-    @if (!string.IsNullOrEmpty(Query))
-    {
-        @if (CodePoints == null)
-        {
-            <div class="spinner"><i class="fas fa-2x fa-spinner fa-pulse"></i></div>
-        }
-        else
-        {
-            <p>The search for "@Query" produced @CodePoints.Length.ToString(CultureInfo.InvariantCulture) results.</p>
-            @if (CodePoints.Length > 0)
-            {
-                <table class="table table-sm table-bordered table-striped decomposition-table">
-                    <thead class="thead-dark">
-                        <tr>
-                            <th class="display-text">Character</th>
-                            <th class="code-point">Code Point</th>
-                            <th class="name">Name</th>
-                            <th class="unicode-category">Category</th>
-                            <th class="unicode-block">Block</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var codePoint in CodePoints)
-                        {
-                            <tr>
-                                <td class="display-text"><a href="/codepoints/@codePoint.Index.ToHexadecimal()">@codePoint.DisplayText</a></td>
-                                <td class="code-point"><a href="/codepoints/@codePoint.Index.ToHexadecimal()">@codePoint.Index.ToCodePointRepresentation()</a></td>
-                                <td class="name">@codePoint.Name</td>
-                                <td class="unicode-category">@codePoint.Category.LongName (@codePoint.Category.ShortName)</td>
-                                <td class="unicode-block"><a route-href="/blocks/@Uri.EscapeDataString(codePoint.Block)">@codePoint.Block</a></td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            }
-        }
-    }
+	@if (!string.IsNullOrEmpty(Query))
+	{
+		@if (CodePoints == null)
+		{
+			<div class="spinner"><i class="fas fa-2x fa-spinner fa-pulse"></i></div>
+		}
+		else
+		{
+			<p>The search for "@Query" produced @CodePoints.Length.ToString(CultureInfo.InvariantCulture) results.</p>
+			@if (CodePoints.Length > 0)
+			{
+				<table class="table table-sm table-bordered table-striped decomposition-table">
+					<thead class="thead-dark">
+						<tr>
+							<th class="display-text">Character</th>
+							<th class="code-point">Code Point</th>
+							<th class="name">Name</th>
+							<th class="unicode-category">Category</th>
+							<th class="unicode-block">Block</th>
+						</tr>
+					</thead>
+					<tbody>
+						@foreach (var codePoint in CodePoints)
+						{
+							<tr>
+								<td class="display-text"><a href="/codepoints/@codePoint.Index.ToHexadecimal()">@codePoint.DisplayText</a></td>
+								<td class="code-point"><a href="/codepoints/@codePoint.Index.ToHexadecimal()">@codePoint.Index.ToCodePointRepresentation()</a></td>
+								<td class="name">@codePoint.Name</td>
+								<td class="unicode-category">@codePoint.Category.LongName (@codePoint.Category.ShortName)</td>
+								<td class="unicode-block"><a route-href="/blocks/@Uri.EscapeDataString(codePoint.Block)">@codePoint.Block</a></td>
+							</tr>
+						}
+					</tbody>
+				</table>
+			}
+		}
+	}
 </section>
 
 @code {
-    private CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
+	private CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
 
-    private string Query { get; set; }
+	private string Query { get; set; }
 
-    private UnicodeBrowser.Models.CodePoint[] CodePoints { get; set; }
+	private UnicodeBrowser.Models.CodePoint[] CodePoints { get; set; }
 
-    protected override async Task OnInitializedAsync()
-    {
-        UriHelper.OnLocationChanged += OnLocationChanged;
+	protected override async Task OnInitializedAsync()
+	{
+		NavigationManager.LocationChanged += OnLocationChanged;
 
-        if (RefreshParameters(UriHelper.GetAbsoluteUri()))
-        {
-            if (string.IsNullOrEmpty(Query))
-            {
-                UriHelper.NavigateTo("/home");
-            }
-            else
-            {
-                CodePoints = await SearchRepository.SearchAsync(Query, _cancellationTokenSource.Token);
-            }
-        }
-    }
+		if (RefreshParameters(NavigationManager.Uri))
+		{
+			if (string.IsNullOrEmpty(Query))
+			{
+				NavigationManager.NavigateTo("/home");
+			}
+			else
+			{
+				CodePoints = await SearchRepository.SearchAsync(Query, _cancellationTokenSource.Token);
+			}
+		}
+	}
 
-    public void Dispose()
-    {
-        UriHelper.OnLocationChanged -= OnLocationChanged;
-    }
+	public void Dispose()
+	{
+		NavigationManager.LocationChanged -= OnLocationChanged;
+	}
 
-    private async void OnLocationChanged(object sender, LocationChangedEventArgs e)
-    {
-        if (!RefreshParameters(e.Location)) return;
+	private async void OnLocationChanged(object sender, LocationChangedEventArgs e)
+	{
+		if (!RefreshParameters(e.Location)) return;
 
-        try
-        {
-            if (string.IsNullOrEmpty(Query))
-            {
-                UriHelper.NavigateTo("/home");
-            }
-            else
-            {
-                CodePoints = await SearchRepository.SearchAsync(Query, _cancellationTokenSource.Token);
-            }
-        }
-        catch (OperationCanceledException)
-        {
-            return;
-        }
-        catch (Exception ex)
-        {
-            Console.Error.WriteLine(ex.ToString());
-        }
+		try
+		{
+			if (string.IsNullOrEmpty(Query))
+			{
+				NavigationManager.NavigateTo("/home");
+			}
+			else
+			{
+				CodePoints = await SearchRepository.SearchAsync(Query, _cancellationTokenSource.Token);
+			}
+		}
+		catch (OperationCanceledException)
+		{
+			return;
+		}
+		catch (Exception ex)
+		{
+			Console.Error.WriteLine(ex.ToString());
+		}
 
-        StateHasChanged();
-    }
+		StateHasChanged();
+	}
 
-    private bool RefreshParameters(string uri)
-    {
-        _cancellationTokenSource.Cancel();
-        _cancellationTokenSource.Dispose();
-        _cancellationTokenSource = new CancellationTokenSource();
+	private bool RefreshParameters(string uri)
+	{
+		_cancellationTokenSource.Cancel();
+		_cancellationTokenSource.Dispose();
+		_cancellationTokenSource = new CancellationTokenSource();
 
-        if (!UriHelper.ToBaseRelativePath(UriHelper.GetBaseUri(), uri).StartsWith("search", StringComparison.OrdinalIgnoreCase)) return false;
+		if (!NavigationManager.ToBaseRelativePath(uri).StartsWith("search", StringComparison.OrdinalIgnoreCase)) return false;
 
-        CodePoints = null;
+		CodePoints = null;
 
-        Query = new Uri(uri).GetQueryParameter("q");
+		Query = new Uri(uri).GetQueryParameter("q");
 
-        return true;
-    }
+		return true;
+	}
 }
