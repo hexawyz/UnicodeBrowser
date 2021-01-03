@@ -12,7 +12,6 @@
     <PackageReference Include="Serilog.Sinks.Async" />
     <PackageReference Include="Serilog.Sinks.Console" />
 		<PackageReference Include="UnicodeInformation" />
-		<PackageReference Include="System.Collections" />
 		<PackageReference Include="System.Runtime.Extensions" />
   </ItemGroup>
 
